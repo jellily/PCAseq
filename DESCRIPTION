@@ -1,0 +1,9 @@
+Package: PCAseq
+Type: Package
+Title: Methods for Population Structure Inference with Sequence Data
+Version: 1.0
+Date: 2015-01-16
+Author: Jennifer Kirk
+Maintainer: Jennifer Kirk <jlkirk@uw.edu>
+Description: More about what it does (maybe more than one line)
+License: GPL-3
