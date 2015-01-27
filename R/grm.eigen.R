@@ -9,29 +9,82 @@
 # Returns: matrix of kinship estimates 
 
 
-grm.eigen <- function(geno)
+grm.eigen <- function(genodat)
 {
-  ns <- dim(geno)[2]
+  #   # check for missing genotypes
+  #   if(any(is.na(genodat)))
+  #   {
+  #     stop("Missing genotype data. See help(popStruct) for details.")
+  #   }
+  #   
+  #   # check for genotype data in the wrong format
+  #   # includes letters, non-integers, etc.
+  #   if( any( !(genodat %in% 0:2) ) )
+  #   {
+  #     stop("Genotype data is not 0, 1, or 2. See help(popStruct) for details.")
+  #   }
+  #   
   
-  stopifnot( ns > 0 )
+  # Get SNP & Sample ids
+  snpid <- read.gdsn(index.gdsn(genodat, "snp.id"))
+  sampid <- read.gdsn(index.gdsn(genodat, "sample.id"))
   
-  # allele freq est for each SNP
-  pA <- 0.5*rowMeans(geno, na.rm = TRUE)
+  # Number of SNPs & Samples
+  nloci <- length(snpid)
+  nsamp <- length(sampid)
   
-  # remove monomorphic SNPs
-  geno <- subset(geno, pA > 0)
-  pA <- 0.5*rowMeans(geno, na.rm = TRUE)
+  #   # check that there are at least 2 subjects in the data set
+  #   if( dim(genodat)[2] < 2)
+  #   {
+  #     stop("Data set includes only 1 subject.")
+  #   }
   
-  # number of SNPs
-  nsnps <- dim(geno)[1]
+  # Loop over the SNPs, reading in 5,000 at a time
+  grm.eigen <- matrix(0, nrow = nsamp, ncol = nsamp)
+  total.snps <- 0
+  sigma.hat <- 0
   
-  # estimated variance at each SNP
-  sigma.hat <- sqrt(2*pA*(1-pA))
-  Zu <- (geno-2*pA)/sigma.hat
-  #Zu[which(is.na(Zu))] <- 0
+  max <- floor(length(snpid)/5000)
   
-  # empirical correlation matrix
-  Psiu <- (1/nsnps)*crossprod(Zu)
+  for(i in 0:max)
+  {
+    # Get the SNP indexes
+    snps <- (1:5000) + i*5000
+    if(snps[5000] > nloci)
+    {
+      snps <- snps[1]:nloci
+    }
+    
+    # Read in the relevant SNP data
+    snp.dat <- snpgdsGetGeno(geno.dat, snp.id = snpid[snps])
+    
+    # Get the allele frequencies
+    allele.freq <- 0.5*colMeans(snp.dat, na.rm = TRUE)
+    
+    # Remove monomorphic & singleton SNPs
+    single.freq <- 2/nsamp
+    snp.dat <- snp.dat[ , allele.freq > single.freq 
+                       & allele.freq < (1 - single.freq)]
+    
+    # Recalculate the allele frequencies
+    allele.freq <- 0.5*colMeans(snp.dat, na.rm = TRUE)
+    
+    # Calculate the number of SNPs actually used
+    total.snps <- total.snps + ncol(snp.dat)
+    
+    # Estimated variance at each SNP
+    geno.cent <- (snp.dat - 2*allele.freq)
+    
+    # find the standard deviation
+    sigma.hat <- sqrt( 4*allele.freq*(1-allele.freq) )
+    
+    # For each block matrix of snps,
+    # Find the empirical correlation matrix
+    grm.eigen <- grm.eigen + tcrossprod(geno.cent/sigma.hat)
+  }
   
-  return(Psiu) 
+  grm.eigen <- (1/nloci) * grm.eigen
+  
+  return(grm.eigen) 
 }
+

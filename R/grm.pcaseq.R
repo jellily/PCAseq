@@ -8,28 +8,58 @@
 # Returns: matrix
 
 # Method of Moments Estimator
-grm.pcaseq <- function(geno)
+grm.pcaseq <- function(genodat)
 {
-  ns <- dim(geno)[2]
+  # Get SNP & Sample ids
+  snpid <- read.gdsn(index.gdsn(genodat, "snp.id"))
+  sampid <- read.gdsn(index.gdsn(genodat, "sample.id"))
   
-  stopifnot( ns > 0 )
+  # Number of SNPs & Samples
+  nloci <- length(snpid)
+  nsamp <- length(sampid)
   
-  # allele freq est for each SNP
-  pA <- 0.5*rowMeans(geno, na.rm = TRUE)
+  # Loop over the SNPs, reading in 5,000 at a time
+  grm.eigen <- matrix(0, nrow = nsamp, ncol = nsamp)
+  total.snps <- 0
+  sigma.hat <- 0
   
-  nsnps <- length(pA)
-  
-  # estimated variance at each SNP
-  Zu <- (geno-2*pA)
-  
-  # empirical correlation matrix
-  Psiu <- (1/nsnps)*crossprod(Zu)
-  
-  # MoM estimator of the variance
-  sigma.hat <- mean( 4*pA*(1-pA) )
-  
-  Psiu<- Psiu/sigma.hat
-  
-  return(Psiu) 
-}
+  for(i in 0:max)
+  {
+    # Get the number of SNPs to choose
+    snps <- (1:5000) + i*5000
+    if(snps[5000] > length(snpid))
+    {
+      snps <- snps[1]:length(snpid)
+    }
+    
+    # Remove monomorphic & singleton SNPs
+    single.freq <- 2/nsamp
+    snp.dat <- snp.dat[ , allele.freq > single.freq 
+                       & allele.freq < (1 - single.freq)]
+    
+    # Get the allele frequencies
+    allele.freq[snps] <- 0.5*colMeans(snp.dat, na.rm = TRUE)
+    
+    # Calculate the number of SNPs actually used
+    total.snps <- total.snps + ncol(snp.dat)
+    
+    # Estimated variance at each SNP
+    geno.cent <- snp.dat - 2* allele.freq[snps]
 
+      
+    # For each block matrix of snps,
+    # find the empirical correlation matrix
+    grm.pcaseq <- grm.pcaseq + tcrossprod(geno.cent)
+  }
+    
+  sigma.hat <- sigma.hat + sum(allele.freq*(1-allele.freq))
+    
+  # close the file
+  closefn.gds(geno.dat)
+}
+  
+  # take the ratio of the two estimators
+  grm.pcaseq <- grm.pcaseq/(4*sigma.hat)
+  
+  return(cov) 
+}

@@ -8,38 +8,18 @@
 
 
 popStruct <- function(genodat, method, npcs)
-{
-  
+{ 
   # validity checks
-  # check if the data set is a vector
-  if( class(genodat) == "numeric" | class(genodat) == "data.frame" )
+  # check if the data set is in GDS format
+  if( class(genodat) != "gds.class" )
   {
-    stop("Genotype data is not a matrix. See help(popStruct) for details.")
-  }
-  
-  # check for missing genotypes
-  if(any(is.na(genodat)))
-  {
-    stop("Missing genotype data.")
-  }
-  
-  # check for genotype data in the wrong format
-  # includes letters, non-integers, etc.
-  if( any( !(genodat %in% 0:2) ) )
-  {
-    stop("Genotype data is not 0, 1, or 2. See help(popStruct) for details.")
-  }
-  
-  # check that there are at least 2 subjects in the data set
-  if( dim(genodat)[2] < 2)
-  {
-    stop("Data set includes only 1 subject.")
+    stop("Genotype data is not GDS format. See help(popStruct) for details.")
   }
   
   # based on method, call the appropriate function
   grm <- switch(method,
-         eigen = grm.eigen(genodat),
-         pcaseq = grm.pcaseq(genodat))
+         eigen = grm.eigen(genodat, allele.freq),
+         pcaseq = grm.pcaseq(genodat, allele.freq))
   
   return(grm)
 }
