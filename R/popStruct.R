@@ -4,10 +4,11 @@
 # method: method to calculate the genetic relatedness matrix string: pcaseq, eigenstrat
 # npcs: number of Principle Componenets (eigen vectors & eigenvalues) 
 #      to return (integer between 1 and # of subjects)
-# not sure what else you would want to see here
+# freq.min: mimum minor allele frequency
+# freq.max: maximum minor allele frequency
 
 
-popStruct <- function(genodat, method, npcs)
+popStruct <- function(genodat, method, npcs, freq.min = NA, freq.max = NA)
 { 
   # validity checks
   # check if the data set is in GDS format
@@ -17,9 +18,11 @@ popStruct <- function(genodat, method, npcs)
   }
   
   # based on method, call the appropriate function
-  grm <- switch(method,
-         eigen = grm.eigen(genodat, allele.freq),
-         pcaseq = grm.pcaseq(genodat, allele.freq))
   
-  return(grm)
+  # find the principle components
+  
+  # return the grm and the specified number of principle components
+  
 }
+
+
