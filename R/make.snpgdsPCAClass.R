@@ -7,25 +7,34 @@ make.snpgdsPCAClass <- function(grm, eigen.res, sample.id, snp.id, eigen.cnt, ne
   
   # if need.genmat is FALSE,
   # set genmat to NULL
-  if(!need.genmat)
-  {
+  if (!need.genmat){
     grm <- NULL
   }
   
   # if eigen.cnt is greater than the total number
   # use the total number & issue a warning
-  if(eigen.cnt > length(eigen.res$values))
-  {
+  if (eigen.cnt > length(eigen.res$values)){
     warning("Number of eigenvectors and values to return is more than the dimensions of the GRM. All eigenvalues and vectors will be returned.")
     eigen.cnt <- length(eigen.res$values)
   }
   
+  print(eigen.res)
+  
+  if (is.null(eigen.res)){
+    eigenval <- NULL
+    eigenvect <- NULL
+    varprop <- NULL
+  }else{
+    eigenval <- eigen.res$values[1:eigen.cnt]
+    eigenvect <- eigen.res$vectors[ , 1:eigen.cnt]
+    varprop <- eigenval/sum(eigen.res$values)
+  }
   # create the object of class snpgdsPCAClass
   pca.res <- list("sample.id" = sample.id,
                   "snp.id" = snp.id,
-                  "eigenval" = eigen.res$values[1:eigen.cnt],
-                  "eigenvect" = eigen.res$vectors[,1:eigen.cnt],
-                  "varprop" = vector(mode = "numeric", length = 0),
+                  "eigenval" = eigenval,
+                  "eigenvect" = eigenvect,
+                  "varprop" = varprop,
                   "TraceXTX" = mat.trace,
                   "Bayesian" = FALSE,
                   "genmat" = grm)

@@ -21,5 +21,5 @@ seqGRM <- function(gdsobj, sample.id = NULL, snp.id = NULL, autosome.only = TRUE
   
   # Return the appropriate object
   # eigen.cnt and need.genmat
-  make.snpgdsPCAClass(grm, eigen.res = NA, sample.id, snp.id, eigen.cnt = 32, need.genmat = TRUE)
+  make.snpgdsPCAClass(grm, eigen.res = NULL, sample.id, snp.id, eigen.cnt = 32, need.genmat = TRUE)
 }
