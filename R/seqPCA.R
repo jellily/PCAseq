@@ -2,7 +2,7 @@
 
 seqPCA <- function(gdsobj, sample.id = NULL, snp.id = NULL, autosome.only = TRUE,
           remove.monosnp = TRUE, maf = NaN, missing.rate = NaN, eigen.cnt = 32,
-          need.genmat=FALSE, verbose = TRUE, method)
+          need.genmat = FALSE, verbose = TRUE, method)
 {
   # Check the inputs for the appropriate classes and values
   check.bool(autosome.only)

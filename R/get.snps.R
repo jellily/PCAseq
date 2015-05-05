@@ -1,10 +1,10 @@
-get.snps <- function( i, nblock, nsnps)
+get.snps <- function(i, nblock, nsnps)
 {
-  snps <- (1:nblock) + (i-1)*nblock
-  if(snps[nblock] > nsnps)
+  index <- (1:nblock) + (i-1)*nblock
+  if(index[nblock] > nsnps)
   {
-    snps <- snps[1]:nsnps
+    index <- index[1]:nsnps
   }
   
-  return(snps)
+  return(index)
 }

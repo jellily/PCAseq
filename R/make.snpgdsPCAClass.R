@@ -1,7 +1,6 @@
 # make.snpgdsPCAClass
 
-make.snpgdsPCAClass <- function(grm, eigen.res, sample.id, snp.id, 
-                                           eigen.cnt, need.genmat)
+make.snpgdsPCAClass <- function(grm, eigen.res, sample.id, snp.id, eigen.cnt, need.genmat)
 {
   # find the trace of the GRM
   mat.trace <- matrix.trace(grm)
