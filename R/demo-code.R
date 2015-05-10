@@ -31,4 +31,12 @@ snpgdsCreateGeno("test.gds", genmat = test,
                  snp.position = 1:3,
                  snp.allele = rep(0, 3) )
 
+#test.file <- snpgdsOpen("test.gds")
+#rez <- snpgdsPCA(test.file, genmat.only = TRUE)
+
 my.pca <- seqPCA("test.gds", method = "eigen", need.genmat = TRUE)
+my.grm <- seqGRM("test.gds", method = "eigen")
+
+# demonstrate compatibility with SNPRelate
+snpgdsPCASNPLoading(my.pca, snpgdsOpen("test.gds"))
+snpgdsPCACorr(my.pca, snpgdsOpen("test.gds"))
