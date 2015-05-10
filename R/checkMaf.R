@@ -1,6 +1,6 @@
 # check.maf
 
-check.maf <- function(maf)
+checkMaf <- function(maf)
 {
   if(is.numeric(maf)) # if maf is a numeric value (vector or singleton)
   {

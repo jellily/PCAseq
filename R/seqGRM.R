@@ -7,17 +7,17 @@ seqGRM <- function(gdsobj, method, sample.id = NULL, snp.id = NULL, autosome.onl
                    verbose = TRUE)
 {
   # Check the inputs for the appropriate classes and values:
-  check.bool(autosome.only)
-  check.bool(remove.monosnp)
-  check.bool(verbose)
+  checkBool(autosome.only)
+  checkBool(remove.monosnp)
+  checkBool(verbose)
   
-  check.maf(maf)
+  checkMaf(maf)
   
-  check.miss(missing.rate)
+  checkMiss(missing.rate)
   
   
   # Find the GRM
-  grm <- run.grm(gdsobj, sample.id, snp.id, autosome.only, remove.monosnp, maf, missing.rate, method)
+  grm <- runGrm(gdsobj, sample.id, snp.id, autosome.only, remove.monosnp, maf, missing.rate, method)
   
   # check if the GRM only has one entry
   if (dim(grm)[1] == 1 | dim(grm)[2] == 1 | class(grm) != "matrix")
@@ -27,5 +27,5 @@ seqGRM <- function(gdsobj, method, sample.id = NULL, snp.id = NULL, autosome.onl
   
   # Return the appropriate object
   # eigen.cnt and need.genmat
-  make.snpgdsPCAClass(grm, eigen.res = NULL, sample.id, snp.id, eigen.cnt = 32, need.genmat = TRUE)
+  seqPCAClass(grm, method, eigen.res = NULL, sample.id, snp.id, eigen.cnt = 32, need.genmat = TRUE)
 }

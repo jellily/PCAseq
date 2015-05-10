@@ -1,6 +1,6 @@
 # filter.mono
 
-filter.mono <-function(snps){
+filterMono <-function(snps){
   
   # find the allele frequencies
   allele.freq <- 0.5*rowMeans(snps, na.rm = TRUE)

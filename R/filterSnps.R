@@ -1,24 +1,24 @@
 # filter.snps
 
-filter.snps <- function(snps, autosome.only, remove.monosnp, missing.rate, maf, snp.chromosome){
+filterSnps <- function(snps, autosome.only, remove.monosnp, missing.rate, maf, snp.chromosome){
   # remove monomorphic snps
   if (remove.monosnp){
-    snps <- filter.mono(snps)
+    snps <- filterMono(snps)
   }
   
   # remove sex chromosome snps
   if (autosome.only){
-    snps <- filter.auto(snps, snp.chromosome)
+    snps <- filterAuto(snps, snp.chromosome)
   }
   
   # remove snps with too much missingness
   if (!is.nan(missing.rate)){
-    snps <- filter.miss(snps, missing.rate)
+    snps <- filterMiss(snps, missing.rate)
   }
   
   # filter based on MAF
   if (!is.nan(maf)){
-    snps <- filter.maf(snps, maf)
+    snps <- filterMaf(snps, maf)
   }
   
   return(snps)

@@ -5,20 +5,20 @@ seqPCA <- function(gdsobj, method, sample.id = NULL, snp.id = NULL, autosome.onl
           need.genmat = FALSE, verbose = TRUE)
 {
   # Check the inputs for the appropriate classes and values
-  check.bool(autosome.only)
-  check.bool(remove.monosnp)
-  check.bool(need.genmat)
-  check.bool(verbose)
+  checkBool(autosome.only)
+  checkBool(remove.monosnp)
+  checkBool(need.genmat)
+  checkBool(verbose)
   
-  check.ecnt(eigen.cnt)
+  checkEcnt(eigen.cnt)
   
-  check.maf(maf)
+  checkMaf(maf)
   
-  check.miss(missing.rate)
+  checkMiss(missing.rate)
   
   
   # Find the GRM
-  grm <- run.grm(gdsobj, sample.id, snp.id, autosome.only, remove.monosnp, maf, missing.rate, method)
+  grm <- runGrm(gdsobj, sample.id, snp.id, autosome.only, remove.monosnp, maf, missing.rate, method)
   
   # Check if the GRM only has one entry
   if (dim(grm)[1] == 1 | dim(grm)[2] == 1 | class(grm) != "matrix")
@@ -30,5 +30,5 @@ seqPCA <- function(gdsobj, method, sample.id = NULL, snp.id = NULL, autosome.onl
   eigen.res <- eigen(grm)
   
   # Return the appropriate object
-  make.snpgdsPCAClass(grm, eigen.res, sample.id, snp.id, eigen.cnt, need.genmat)
+  seqPCAClass(grm, method, eigen.res, sample.id, snp.id, eigen.cnt, need.genmat)
 }

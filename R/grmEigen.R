@@ -1,6 +1,6 @@
-# grm.pcaseq
+# grm.eigen
 
-grm.pcaseq <- function(geno.dat, sample.id, snp.id, autosome.only,remove.monosnp, 
+grmEigen <- function(geno.dat, sample.id, snp.id, autosome.only, remove.monosnp, 
                       maf, missing.rate, transpose)
 {
   # constants
@@ -13,7 +13,7 @@ grm.pcaseq <- function(geno.dat, sample.id, snp.id, autosome.only,remove.monosnp
   
   # create empty grm & vector to count the number of snps used
   grm <- matrix(0, nrow = nsubj, ncol = nsubj)
-  allele.ps <- c()
+  total.snps <- 0
   
   # Loop through the SNPs in blocks of size nblock
   for(i in 1:max)
@@ -21,11 +21,11 @@ grm.pcaseq <- function(geno.dat, sample.id, snp.id, autosome.only,remove.monosnp
     message(paste("Computing GRM: Block", i, "of", max))
     
     # Get the SNPs to choose
-    snps <- get.snps(i, nblock, nsnps)
+    snps <- getSnps(i, nblock, nsnps)
     
-    # Read in the relevant SNP data, subsetting by sample if necessary
+    # Read in the relevant SNP data, subsetting by subject
     snp.dat <- snpgdsGetGeno(geno.dat, snp.id = snp.id[snps], sample.id = sample.id)  
-
+    
     # Transpose data into SNPs x Samples
     if (transpose)
     {
@@ -33,21 +33,20 @@ grm.pcaseq <- function(geno.dat, sample.id, snp.id, autosome.only,remove.monosnp
     }
     
     # Filter the data
-    snp.dat <- filter.snps(snp.dat, autosome.only, remove.monosnp, missing.rate, 
-                           maf, read.gdsn(index.gdsn(genofile, "snp.chromosome")))
+    snp.dat <- filterSnps(snp.dat, autosome.only, remove.monosnp, missing.rate, 
+                           maf, read.gdsn(index.gdsn(geno.dat, "snp.chromosome")))
     
-    # Calculate the SNP allele frequencies
+    total.snps <- dim(snp.dat)[byrows] # total # of snps
     allele.freq <- (1/ncopies)*rowMeans(snp.dat, na.rm = TRUE)  # snp allele frequencies
     
     # Estimate the variance at each SNP
-    geno.cent <- sweep(snp.dat, byrows, STATS = 2*allele.freq)
-    allele.ps <- c(allele.ps, allele.freq)
+    geno.cent <- sweep(snp.dat, byrows, STATS = ncopies*allele.freq)
+    sigma.eigen <- sqrt(allele.freq*(1-allele.freq)) # standard deviation
     
     # Find the empirical correlation matrix
-    grm <- grm + crossprod(geno.cent) 
+    zee <- sweep(geno.cent, byrows, STATS = sigma.eigen, FUN = "/")
+    grm <- grm + crossprod(zee)
   }
-  
-  sigma.pcaseq <- sum(ncopies*allele.ps*(1-allele.ps)) # standard deviation
-  grm <- grm/sigma.pcaseq
+  grm <- (1/total.snps)*grm
   return(grm)
 }

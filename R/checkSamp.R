@@ -1,6 +1,6 @@
 # check.vector function
 
-check.samp <- function(user.samp, data.samp)
+checkSamp <- function(user.samp, data.samp)
 {
   if (length(user.samp) > length(data.samp)){
     stop("More sample IDs given than are in the genotype data set.")

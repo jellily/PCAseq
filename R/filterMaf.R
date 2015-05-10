@@ -1,6 +1,6 @@
 # filter.maf
 
-filter.maf <-function(snps, maf){
+filterMaf <-function(snps, maf){
   
   # find the allele frequencies
   allele.freq <- 0.5*rowMeans(snps, na.rm = TRUE)

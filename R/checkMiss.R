@@ -1,6 +1,6 @@
 # check.miss
 
-check.miss <- function(miss){
+checkMiss <- function(miss){
   if (is.numeric(miss)){ # if the missing rate is a number
     if (length(miss) == 1){ # and only one is given
       if (is.nan(miss)){ # and it is NaN

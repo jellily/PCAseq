@@ -1,6 +1,6 @@
 # filter.miss
 
-filter.miss <-function(snps, missing.rate){
+filterMiss <-function(snps, missing.rate){
   
   # replace the missing code 3 with
   # NA

@@ -1,6 +1,6 @@
 # check.ecnt
 
-check.ecnt <- function(ecnt)
+checkEcnt <- function(ecnt)
 {
   if(is.numeric(ecnt)) # if ecnt is a number
   {

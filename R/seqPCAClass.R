@@ -1,6 +1,6 @@
 # make.snpgdsPCAClass
 
-make.snpgdsPCAClass <- function(grm, eigen.res, sample.id, snp.id, eigen.cnt, need.genmat)
+seqPCAClass <- function(grm, method, eigen.res, sample.id, snp.id, eigen.cnt, need.genmat)
 {
   # find the trace of the GRM
   mat.trace <- matrix.trace(grm)
@@ -18,8 +18,6 @@ make.snpgdsPCAClass <- function(grm, eigen.res, sample.id, snp.id, eigen.cnt, ne
     eigen.cnt <- length(eigen.res$values)
   }
   
-  print(eigen.res)
-  
   if (is.null(eigen.res)){
     eigenval <- NULL
     eigenvect <- NULL
@@ -30,7 +28,8 @@ make.snpgdsPCAClass <- function(grm, eigen.res, sample.id, snp.id, eigen.cnt, ne
     varprop <- eigenval/sum(eigen.res$values)
   }
   # create the object of class snpgdsPCAClass
-  pca.res <- list("sample.id" = sample.id,
+  pca.res <- list("method" = method,
+                  "sample.id" = sample.id,
                   "snp.id" = snp.id,
                   "eigenval" = eigenval,
                   "eigenvect" = eigenvect,
@@ -38,7 +37,7 @@ make.snpgdsPCAClass <- function(grm, eigen.res, sample.id, snp.id, eigen.cnt, ne
                   "TraceXTX" = mat.trace,
                   "Bayesian" = FALSE,
                   "genmat" = grm)
-  class(pca.res) <- "snpgdsPCAClass"
+  class(pca.res) <- list("seqPCAClass", "snpgdsPCAClass")
   
   return(pca.res)  
 }

@@ -1,6 +1,6 @@
 # check.vector function
 
-check.snp <- function(user.snp, data.snp)
+checkSnp <- function(user.snp, data.snp)
 {
   if (length(user.snp) > length(data.snp)){
     stop("More SNP IDs given than are in the genotype data set.")
