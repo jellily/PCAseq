@@ -1,7 +1,7 @@
 # grm.eigen
 
 grm.eigen <- function(geno.dat, sample.id, snp.id, autosome.only, remove.monosnp, 
-                      maf, missing.rate)
+                      maf, missing.rate, transpose)
 {
   # constants
   nblock <- 5000
@@ -26,11 +26,18 @@ grm.eigen <- function(geno.dat, sample.id, snp.id, autosome.only, remove.monosnp
     # Read in the relevant SNP data, subsetting by subject
     snp.dat <- snpgdsGetGeno(geno.dat, snp.id = snp.id[snps], sample.id = sample.id)  
     
+    # Transpose data into SNPs x Samples
+    if (transpose)
+    {
+      snp.dat <- t(snp.dat)
+    }
+    
     # Filter the data
-    snp.dat <- filter.snps(snp.dat, autosome.only, remove.monosnp, missing.rate, maf)
+    snp.dat <- filter.snps(snp.dat, autosome.only, remove.monosnp, missing.rate, 
+                           maf, read.gdsn(index.gdsn(geno.dat, "snp.chromosome")))
     
     total.snps <- dim(snp.dat)[byrows] # total # of snps
-    allele.freq <- (1/ncopies)*rowMeans(snp.dat)  # snp allele frequencies
+    allele.freq <- (1/ncopies)*rowMeans(snp.dat, na.rm = TRUE)  # snp allele frequencies
     
     # Estimate the variance at each SNP
     geno.cent <- sweep(snp.dat, byrows, STATS = ncopies*allele.freq)

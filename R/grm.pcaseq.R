@@ -1,7 +1,7 @@
 # grm.pcaseq
 
 grm.pcaseq <- function(geno.dat, sample.id, snp.id, autosome.only,remove.monosnp, 
-                      maf, missing.rate)
+                      maf, missing.rate, transpose)
 {
   # constants
   nblock <- 5000
@@ -23,14 +23,21 @@ grm.pcaseq <- function(geno.dat, sample.id, snp.id, autosome.only,remove.monosnp
     # Get the SNPs to choose
     snps <- get.snps(i, nblock, nsnps)
     
-    # Read in the relevant SNP data, subsetting by subject
+    # Read in the relevant SNP data, subsetting by sample if necessary
     snp.dat <- snpgdsGetGeno(geno.dat, snp.id = snp.id[snps], sample.id = sample.id)  
 
+    # Transpose data into SNPs x Samples
+    if (transpose)
+    {
+      snp.dat <- t(snp.dat)
+    }
+    
     # Filter the data
-    snp.dat <- filter.snps(snp.dat, autosome.only, remove.monosnp, missing.rate, maf)
+    snp.dat <- filter.snps(snp.dat, autosome.only, remove.monosnp, missing.rate, 
+                           maf, read.gdsn(index.gdsn(genofile, "snp.chromosome")))
     
     # Calculate the SNP allele frequencies
-    allele.freq <- (1/ncopies)*rowMeans(snp.dat)  # snp allele frequencies
+    allele.freq <- (1/ncopies)*rowMeans(snp.dat, na.rm = TRUE)  # snp allele frequencies
     
     # Estimate the variance at each SNP
     geno.cent <- sweep(snp.dat, byrows, STATS = 2*allele.freq)
