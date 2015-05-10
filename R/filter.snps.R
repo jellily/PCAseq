@@ -1,6 +1,6 @@
 # filter.snps
 
-filter.snps <- function(snps, autosome.only, remove.monosnp, missing.rate, maf){
+filter.snps <- function(snps, autosome.only, remove.monosnp, missing.rate, maf, snp.chromosome){
   # remove monomorphic snps
   if (remove.monosnp){
     snps <- filter.mono(snps)
@@ -8,7 +8,7 @@ filter.snps <- function(snps, autosome.only, remove.monosnp, missing.rate, maf){
   
   # remove sex chromosome snps
   if (autosome.only){
-    snps <- filter.auto(snps)
+    snps <- filter.auto(snps, snp.chromosome)
   }
   
   # remove snps with too much missingness
