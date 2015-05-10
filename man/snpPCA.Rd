@@ -1,6 +1,6 @@
 \name{seqPCA}
 \alias{seqPCA}
-\alias(seqGRM)
+\alias{seqGRM}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{
 Principal Component Analysis (PCA) with Sequence Data}

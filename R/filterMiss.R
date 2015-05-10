@@ -7,7 +7,7 @@ filterMiss <-function(snps, missing.rate){
   #snp[snp == 3] <- NA
   
   # find the proportion missing for each SNP
-  #missing <- get.missing(snps)
+  #missing <- getMiss(snps)
   
   #snps <- snps[misisng <= missing.rate, ]
   
