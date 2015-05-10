@@ -8,3 +8,5 @@ Maintainer: Jennifer Kirk <jlkirk@uw.edu>
 Description: More about what it does (maybe more than one line)
 License: GPL-3
 Suggests: testthat
+Depends: SNPRelate
+Imports: matrixcalc

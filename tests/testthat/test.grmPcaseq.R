@@ -1,4 +1,4 @@
-# Test for grm.eigen
+# Test for grmPcaseq
 
 # Exmple 1
 # read in the solutions
@@ -9,9 +9,9 @@ test.file <- snpgdsOpen("ex1.gds")
 samp.id <- read.gdsn(index.gdsn(test.file, "sample.id"))
 snp.id <- read.gdsn(index.gdsn(test.file, "snp.id"))
 
-test_that("grm.pcaseq returns the appropriate GRM matrix",
+test_that("grmPcaseq returns the appropriate GRM matrix",
 {
-  expect_equal(grm.pcaseq(test.file, sample.id = samp.id, snp.id = snp.id, autosome.only = FALSE, 
+  expect_equal(grmPcaseq(test.file, sample.id = samp.id, snp.id = snp.id, autosome.only = FALSE, 
                          remove.monosnp = FALSE, maf = NaN, missing.rate = NaN, transpose = FALSE), 
               my.res)
 })
@@ -27,9 +27,9 @@ test.file <- snpgdsOpen("ex1t.gds")
 samp.id <- read.gdsn(index.gdsn(test.file, "sample.id"))
 snp.id <- read.gdsn(index.gdsn(test.file, "snp.id"))
 
-test_that("grm.pcaseq returns the appropriate GRM matrix",
+test_that("grmPcaseq returns the appropriate GRM matrix",
 {
-  expect_equal(grm.pcaseq(test.file, sample.id = samp.id, snp.id = snp.id, autosome.only = FALSE, 
+  expect_equal(grmPcaseq(test.file, sample.id = samp.id, snp.id = snp.id, autosome.only = FALSE, 
                           remove.monosnp = FALSE, maf = NaN, missing.rate = NaN, transpose = TRUE), 
                my.res)
 })
@@ -48,7 +48,7 @@ snp.id <- read.gdsn(index.gdsn(test.file, "snp.id"))
 
 test_that("grm.eigen returns the appropriate GRM matrix",
 {
-  expect_equal(grm.pcaseq(test.file, sample.id = samp.id, snp.id = snp.id, autosome.only = FALSE, 
+  expect_equal(grmPcaseq(test.file, sample.id = samp.id, snp.id = snp.id, autosome.only = FALSE, 
                          remove.monosnp = FALSE, maf = NaN, missing.rate = NaN, transpose = FALSE), 
                my.res)
 })
@@ -63,9 +63,9 @@ test.file <- snpgdsOpen("ex2t.gds")
 samp.id <- read.gdsn(index.gdsn(test.file, "sample.id"))
 snp.id <- read.gdsn(index.gdsn(test.file, "snp.id"))
 
-test_that("grm.pcaseq returns the appropriate GRM matrix",
+test_that("grmPcaseq returns the appropriate GRM matrix",
 {
-  expect_equal(grm.pcaseq(test.file, sample.id = samp.id, snp.id = snp.id, autosome.only = FALSE, 
+  expect_equal(grmPcaseq(test.file, sample.id = samp.id, snp.id = snp.id, autosome.only = FALSE, 
                           remove.monosnp = FALSE, maf = NaN, missing.rate = NaN, transpose = TRUE), 
                my.res)
 })

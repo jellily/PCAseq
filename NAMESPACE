@@ -1,1 +1,5 @@
 exportPattern("^[[:alpha:]]+")
+export(seqPCA, seqGRM)
+import("SNPRelate")
+importFrom("matrixcalc", matrix.trace)
+
