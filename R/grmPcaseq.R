@@ -34,7 +34,7 @@ grmPcaseq <- function(geno.dat, sample.id, snp.id, autosome.only,remove.monosnp,
     
     # Filter the data
     snp.dat <- filterSnps(snp.dat, autosome.only, remove.monosnp, missing.rate, 
-                           maf, read.gdsn(index.gdsn(genofile, "snp.chromosome")))
+                           maf, read.gdsn(index.gdsn(geno.dat, "snp.chromosome")))
     
     # Calculate the SNP allele frequencies
     allele.freq <- (1/ncopies)*rowMeans(snp.dat, na.rm = TRUE)  # snp allele frequencies

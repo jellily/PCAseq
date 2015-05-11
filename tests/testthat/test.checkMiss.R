@@ -3,8 +3,8 @@
 test_that("checkMiss passes when the input is a proper missingness rate",
 {
   expect_true(checkMiss(0.352))
-  expect_warning(checkMiss(1), TRUE)
-  expect_message(checkMiss(0), TRUE)
+  expect_warning(checkMiss(1))
+  expect_message(checkMiss(0))
   expect_identical(checkMiss(NaN), TRUE)
 })
 

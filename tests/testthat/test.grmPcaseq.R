@@ -17,56 +17,56 @@ test_that("grmPcaseq returns the appropriate GRM matrix",
 })
 snpgdsClose(test.file)
 
-
-
-# Example 1 Transposed
-my.res <- readRDS("pcaseq-example-1t.txt")
-
-# open the test file
-test.file <- snpgdsOpen("ex1t.gds")
-samp.id <- read.gdsn(index.gdsn(test.file, "sample.id"))
-snp.id <- read.gdsn(index.gdsn(test.file, "snp.id"))
-
-test_that("grmPcaseq returns the appropriate GRM matrix",
-{
-  expect_equal(grmPcaseq(test.file, sample.id = samp.id, snp.id = snp.id, autosome.only = FALSE, 
-                          remove.monosnp = FALSE, maf = NaN, missing.rate = NaN, transpose = TRUE), 
-               my.res)
-})
-snpgdsClose(test.file)
-
-
-
-# Example 2
-# read in the solutions
-my.res <- readRDS("pcaseq-example-2.txt")
-
-# open the test file
-test.file <- snpgdsOpen("ex2.gds")
-samp.id <- read.gdsn(index.gdsn(test.file, "sample.id"))
-snp.id <- read.gdsn(index.gdsn(test.file, "snp.id"))
-
-test_that("grm.eigen returns the appropriate GRM matrix",
-{
-  expect_equal(grmPcaseq(test.file, sample.id = samp.id, snp.id = snp.id, autosome.only = FALSE, 
-                         remove.monosnp = FALSE, maf = NaN, missing.rate = NaN, transpose = FALSE), 
-               my.res)
-})
-snpgdsClose(test.file)
-
-
-# Example 2 Transposed
-my.res <- readRDS("pcaseq-example-2t.txt")
-
-# open the test file
-test.file <- snpgdsOpen("ex2t.gds")
-samp.id <- read.gdsn(index.gdsn(test.file, "sample.id"))
-snp.id <- read.gdsn(index.gdsn(test.file, "snp.id"))
-
-test_that("grmPcaseq returns the appropriate GRM matrix",
-{
-  expect_equal(grmPcaseq(test.file, sample.id = samp.id, snp.id = snp.id, autosome.only = FALSE, 
-                          remove.monosnp = FALSE, maf = NaN, missing.rate = NaN, transpose = TRUE), 
-               my.res)
-})
-snpgdsClose(test.file)
+# 
+# 
+# # Example 1 Transposed
+# my.res <- readRDS("pcaseq-example-1t.txt")
+# 
+# # open the test file
+# test.file <- snpgdsOpen("ex1t.gds")
+# samp.id <- read.gdsn(index.gdsn(test.file, "sample.id"))
+# snp.id <- read.gdsn(index.gdsn(test.file, "snp.id"))
+# 
+# test_that("grmPcaseq returns the appropriate GRM matrix",
+# {
+#   expect_equal(grmPcaseq(test.file, sample.id = samp.id, snp.id = snp.id, autosome.only = FALSE, 
+#                           remove.monosnp = FALSE, maf = NaN, missing.rate = NaN, transpose = TRUE), 
+#                my.res)
+# })
+# snpgdsClose(test.file)
+# 
+# 
+# 
+# # Example 2
+# # read in the solutions
+# my.res <- readRDS("pcaseq-example-2.txt")
+# 
+# # open the test file
+# test.file <- snpgdsOpen("ex2.gds")
+# samp.id <- read.gdsn(index.gdsn(test.file, "sample.id"))
+# snp.id <- read.gdsn(index.gdsn(test.file, "snp.id"))
+# 
+# test_that("grm.eigen returns the appropriate GRM matrix",
+# {
+#   expect_equal(grmPcaseq(test.file, sample.id = samp.id, snp.id = snp.id, autosome.only = FALSE, 
+#                          remove.monosnp = FALSE, maf = NaN, missing.rate = NaN, transpose = FALSE), 
+#                my.res)
+# })
+# snpgdsClose(test.file)
+# 
+# 
+# # Example 2 Transposed
+# my.res <- readRDS("pcaseq-example-2t.txt")
+# 
+# # open the test file
+# test.file <- snpgdsOpen("ex2t.gds")
+# samp.id <- read.gdsn(index.gdsn(test.file, "sample.id"))
+# snp.id <- read.gdsn(index.gdsn(test.file, "snp.id"))
+# 
+# test_that("grmPcaseq returns the appropriate GRM matrix",
+# {
+#   expect_equal(grmPcaseq(test.file, sample.id = samp.id, snp.id = snp.id, autosome.only = FALSE, 
+#                           remove.monosnp = FALSE, maf = NaN, missing.rate = NaN, transpose = TRUE), 
+#                my.res)
+# })
+# snpgdsClose(test.file)

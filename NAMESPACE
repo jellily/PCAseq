@@ -1,5 +1,5 @@
-exportPattern("^[[:alpha:]]+")
 export(seqPCA, seqGRM)
 import("SNPRelate")
 importFrom("matrixcalc", matrix.trace)
+importFrom("gdsfmt", read.gdsn, index.gdsn, get.attr.gdsn)
 

@@ -5,8 +5,8 @@ Version: 1.0
 Date: 2015-01-16
 Author: Jennifer Kirk
 Maintainer: Jennifer Kirk <jlkirk@uw.edu>
-Description: More about what it does (maybe more than one line)
+Description: This package implements the PCA-seq method for inferring genetic population structure using sequence data. It is meant to extend the SNPRelate pacakge, and is compatible with many of the functions from SNPRelate.
 License: GPL-3
 Suggests: testthat
 Depends: SNPRelate
-Imports: matrixcalc
+Imports: matrixcalc, gdsfmt

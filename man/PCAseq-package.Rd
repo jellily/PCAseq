@@ -19,20 +19,17 @@ License: \tab What license is it under?\cr
 }
 \author{
 Jennifer L Kirk
-
 Maintainer: Jennifer L Kirk <jlkirk@uw.edu>
-~~ The author and/or maintainer of the package ~~
+
 }
 \references{
 ~~ Literature or other references for background information ~~
 }
-~~ Optionally other standard keywords, one per line, from file KEYWORDS in the R documentation ~~
-~~ directory ~~
+
 \keyword{ package }
 \seealso{
-~~ Optional links to other man pages, e.g. ~~
-~~ \code{\link[<pkg>:<pkg>-package]{<pkg>}} ~~
+\code{\link[SNPRelate:SNPRelate-package]{SNPRelate}}
 }
 \examples{
-~~ simple examples of the most important functions ~~
+# place an example here
 }
