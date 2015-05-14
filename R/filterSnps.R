@@ -1,18 +1,22 @@
-# filter.snps
+# Functions to filter the SNPs based on parameters passed in by the user
 
-filterSnps <- function(snps, autosome.only, remove.monosnp, missing.rate, maf, snp.chromosome){
+# filterSnps -------------------------------------------------------------------
+# Subset the genotype data set by removing SNPs based on parameters passed in
+
+filterSnps <- function(snps, autosomeOnly, removeMonosnp, missingRate, maf, 
+                       snpChromosome){
   # remove monomorphic snps
-  if (remove.monosnp){
+  if (removeMonosnp){
     snps <- filterMono(snps)
   }
   
   # remove sex chromosome snps
-  if (autosome.only){
-    snps <- filterAuto(snps, snp.chromosome)
+  if (autosomeOnly){
+    snps <- filterAuto(snps, snpChromosome)
   }
   
   # remove snps with too much missingness
-  if (!is.nan(missing.rate)){
+  if (!is.nan(missingRate)){
     snps <- filterMiss(snps, missing.rate)
   }
   
@@ -22,4 +26,122 @@ filterSnps <- function(snps, autosome.only, remove.monosnp, missing.rate, maf, s
   }
   
   return(snps)
+}
+
+
+# filterMono -------------------------------------------------------------------
+# Remove monomorphic snps
+
+filterMono <-function(snps){
+  
+  # find the allele frequencies
+  alleleFreq <- 0.5*rowMeans(snps, na.rm = TRUE)
+  
+  # remove monomorphic SNPs
+  snps <- snps[alleleFreq > 0 & alleleFreq < 1, ]
+  
+  # check to make sure there are still SNPs in the data set
+  if (class(snps) != "matrix" | nrow(snps) == 0){
+    stop("All SNPs are monomorphic. No data remains after removing monomorphic 
+         SNPs.")
+  } else if (nrow(snps) < 50){
+    message("Fewer than 50 SNPs remain after removing monomorphic SNPs.")
+    return(snps)
+  } else {
+    return(snps)
+  }
+}
+
+# filterAuto -------------------------------------------------------------------
+# Subset SNPs to only those on the autosomal chromosomes
+
+filterAuto <-function(snps, snpChromosome){
+  
+  autosomeCodes <- as.character(1:22)
+  
+  # Convert the vector of SNP choromosome labels to numeric
+  # Any character label will become NA
+  snpChromsome <- as.character(snpChromosome)
+  
+  # Select only those SNPs with chromosome labels 1-22 (autosomes)
+  snps <- snps[snpChromosome %in% autosomeCodes, ]
+  
+  return(snps)
+}
+
+
+# filterMiss -------------------------------------------------------------------
+# Subset the SNPs to those with missingness rates less than missingRate
+
+filterMiss <-function(snps, missingRate){
+  
+  # replace the missing code 3 with
+  # NA
+  snps[snps == 3] <- NA
+  
+  # find the proportion missing for each SNP
+  missing <- getMissRate(snps)
+  
+  snps <- snps[missing <= missingRate, ]
+  
+  # check to make sure there are still SNPs in the data set
+  if (class(snps) != "matrix" | nrow(snps) == 0){
+    stop("All SNPs have missing rates above specified threshold. No data remains
+          after missingness filtering.")
+  } else if (nrow(snps) < 50){
+    message("Fewer than 50 SNPs remain after filtering by missing rate.")
+    return(snps)
+  } else {
+    return(snps)
+  }
+  
+  return(snps)
+}
+
+# filterMaf --------------------------------------------------------------------
+# Subset the SNPs to those with MAFs either greater than maf (if a single value)
+# or in the range specified (if two values)
+
+filterMaf <-function(snps, maf){
+  
+  # find the allele frequencies
+  alleleFreq <- 0.5*rowMeans(snps, na.rm = TRUE)
+  
+  # different filtering based on what value is specified
+  if (length(maf) == 1){
+    snps <- snps[alleleFreq > maf & alleleFreq < (1 - maf), ]
+  } else { #  if length(maf) == 2
+    min <- maf[1]
+    max <- maf[2]
+    
+    snps <- snps[alleleFreq >= min & alleleFreq <= max |
+                   alleleFreq >= (1 - max) & alleleFreq <= (1 - min), ]
+  }
+  
+  # check to make sure there are still SNPs in the data set
+  if (class(snps) != "matrix" | nrow(snps) == 0){
+    stop("All SNPs have MAF below specified threshold. No data remains after MAF
+         filtering.")
+  } else if (nrow(snps) < 50){
+    message("Fewer than 50 SNPs remain after filtering by MAF.")
+    return(snps)
+  } else {
+    return(snps)
+  }
+}
+
+# getMissRate ------------------------------------------------------------------
+# Get the missingness rate for the SNPs
+
+getMissRate <- function(snps){
+  byRows <- 1
+  
+  # function to calculate the proportion missing for one snp
+  propMiss <- function(snp){
+    mean(ifelse(is.na(snp), 1, 0))
+  }
+  
+  missing <- apply(snps, byRows, FUN = propMiss)
+  
+  return(missing)
 }

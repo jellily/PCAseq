@@ -1,9 +1,10 @@
 # seqPCA
 
-seqPCA <- function(gdsobj, method, sample.id = NULL, snp.id = NULL, autosome.only = TRUE,
-          remove.monosnp = TRUE, maf = NaN, missing.rate = NaN, eigen.cnt = 32,
-          need.genmat = FALSE, verbose = TRUE)
-{
+seqPCA <- function(gdsobj, method, sample.id = NULL, snp.id = NULL, 
+                   autosome.only = TRUE, remove.monosnp = TRUE, maf = NaN, 
+                   missing.rate = NaN, eigen.cnt = 32, need.genmat = FALSE, 
+                   verbose = TRUE){
+  
   # Check the inputs for the appropriate classes and values
   checkBool(autosome.only)
   checkBool(remove.monosnp)
@@ -18,7 +19,8 @@ seqPCA <- function(gdsobj, method, sample.id = NULL, snp.id = NULL, autosome.onl
   
   
   # Find the GRM
-  grm <- runGrm(gdsobj, sample.id, snp.id, autosome.only, remove.monosnp, maf, missing.rate, method)
+  grm <- runGRM(gdsobj, method, sample.id, snp.id, autosome.only, 
+                remove.monosnp, maf, missing.rate)
   
   # Check if the GRM only has one entry
   if (dim(grm)[1] == 1 | dim(grm)[2] == 1 | class(grm) != "matrix")
@@ -27,8 +29,8 @@ seqPCA <- function(gdsobj, method, sample.id = NULL, snp.id = NULL, autosome.onl
   }
   
   # Find the eigendecomposition
-  eigen.res <- eigen(grm)
+  eigenRes <- eigen(grm)
   
   # Return the appropriate object
-  seqPCAClass(grm, method, eigen.res, sample.id, snp.id, eigen.cnt, need.genmat)
+  seqPCAClass(grm, method, eigenRes, sample.id, snp.id, eigen.cnt, need.genmat)
 }

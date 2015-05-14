@@ -10,26 +10,30 @@ Calculate the eigenvectors and eigenvalues for principal component analysis of s
 \usage{
 seqPCA(gdsobj, method, sample.id = NULL, snp.id = NULL, autosome.only = TRUE,
           remove.monosnp = TRUE, maf = NaN, missing.rate = NaN, eigen.cnt = 32,
-          need.genmat = FALSE, verbose = TRUE)
+          need.genmat = FALSE, verbose = TRUE)}
+\usage{
+seqGRM(gdsobj, method, sample.id = NULL, snp.id = NULL, autosome.only = TRUE,
+                   remove.monosnp = TRUE, maf = NaN, missing.rate = NaN,
+                   verbose = TRUE)
 }
-%- maybe also 'usage' for other objects documented here.
+
 \arguments{
   \item{gdsobj}{an object of the class SNPGDSFileClass, a SNP GDS file}
-  \item{method}{a string indicating which method to use to calculate the GRM; see Details for more infomation}
+  \item{method}{a string indicating which method to use to calculate the GRM; see Details}
   \item{sample.id}{a vector of sample ids specifying the samples to use for analysis; if NULL, all samples are used}
   \item{snp.id}{a vector of SNP ids specifying the SNps to use for analysis; if NULL, all SNPs are used}
-  \item{autosome.only}{not supported}
+  \item{autosome.only}{if TRUE, use autosomal SNPs only; if it is a numeric or character vector, keep SNPs according to the specified chromosomes}
   \item{remove.monosnp}{if TURE, remove monomorphic SNPs}
-  \item{maf}{if one number is specified, use SNPs with MAF greater than or equal to this value; if a numeric vector of length two is specified, only SNPs with MAFs from (min, max) are taken}
-  \item{missing.rate}{not supported}
-  \item{eigen.cnt}{the number of eigen vectors and values to return}
+  \item{maf}{if one number is specified, use SNPs with MAF greater than or equal to this value; if a numeric vector of length two is specified, only SNPs with MAFs in (min, max) are taken}
+  \item{missing.rate}{to use the SNPs with missing rates less than or equal to missing.rate; if NaN, no misisng threshold}
+  \item{eigen.cnt}{the number of eigen vectors and values to return; if zero, return all eigenvalues and vectors}
   \item{need.genmat}{if TRUE, return the genetic relatedness matrix}
   \item{verbose}{not supported}
 }
 \details{
 Some more details about the package here...}
 \value{
-Return a snpgdsPCAClass object, and it is a list:
+Return a snpPCAClass object, a list with the follow slots:
 \item{sample.id}{the sample ids used in the analysis}
 \item{snp.id}{the SNP ids used in the analysis}
 \item{eigenval}{eigenvalues}
@@ -39,17 +43,11 @@ Return a snpgdsPCAClass object, and it is a list:
 \item{Bayesian}{indicates Bayes normalization; set to FALSE, as this is not currently supported}
 \item{genmat}{the genetic relateness matrix}
 }
-\references{
-%% ~put references to the literature/web site here ~
-}
+
 \author{
 Jennifer L Kirk
 }
-\note{
-%%  ~~further notes~~
-}
 
-%% ~Make other sections like Warning with \section{Warning }{....} ~
 
 \seealso{
 %% ~~objects to See Also as \code{\link{help}}, ~~~
