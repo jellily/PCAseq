@@ -28,6 +28,6 @@ seqGRM <- function(gdsobj, method, sample.id = NULL, snp.id = NULL,
   
   # Return the appropriate object
   # eigen.cnt and need.genmat
-  seqPCAClass(grm, method, sample.id, snp.id, eigenRes = NULL, eigenCnt = 32,
-              needGenmat = TRUE)
+  seqPCAClass(grm, method, maf, sample.id, snp.id, eigenRes = NULL, 
+              eigenCnt = 32, needGenmat = TRUE)
 }

@@ -1,5 +1,4 @@
 export(seqPCA, seqGRM)
-import("matrixcalc")
 importFrom("SNPRelate", snpgdsOpen, snpgdsClose)
 importFrom("gdsfmt", read.gdsn, index.gdsn, get.attr.gdsn)
 

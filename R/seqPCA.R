@@ -32,5 +32,6 @@ seqPCA <- function(gdsobj, method, sample.id = NULL, snp.id = NULL,
   eigenRes <- eigen(grm)
   
   # Return the appropriate object
-  seqPCAClass(grm, method, eigenRes, sample.id, snp.id, eigen.cnt, need.genmat)
+  seqPCAClass(grm, method, maf, eigenRes, sample.id, snp.id, eigen.cnt, 
+              need.genmat)
 }

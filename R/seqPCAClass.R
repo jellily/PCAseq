@@ -1,10 +1,15 @@
 # seqPCAClass ------------------------------------------------------------------
 
-seqPCAClass <- function(grm, method, eigenRes, sampleId, snpId, eigenCnt, 
+seqPCAClass <- function(grm, method, maf, eigenRes, sampleId, snpId, eigenCnt, 
                         needGenmat){
   
   # find the trace of the GRM
-  matTrace <- matrixcalc::matrix.trace(grm)
+  if (requireNamespace("matrixcalc", quietly = TRUE)) {
+    matTrace <- matrixcalc::matrix.trace(grm)
+  } else {
+    matTrace <- NA
+    warning("Package matrixcalc needed to calculate the trace of the GRM.")
+  }
   
   # if needGenmat is FALSE,
   # set genmat to NULL
@@ -35,6 +40,7 @@ seqPCAClass <- function(grm, method, eigenRes, sampleId, snpId, eigenCnt,
   
   # create the object of class snpgdsPCAClass
   pcaRes <- list("method" = method,
+                 "maf" = maf,
                   "sample.id" = sampleId,
                   "snp.id" = snpId,
                   "eigenval" = eigenval,
