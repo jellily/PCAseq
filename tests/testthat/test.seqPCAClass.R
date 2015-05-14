@@ -32,3 +32,13 @@ test_that("seqPCAClass passes when the input is correct",
   expect_equal(length(res$eigenval), length(sample.id))
   expect_equal(dim(res$eigenvect)[2], length(sample.id))
 })
+
+
+res <- seqPCAClass(grm, method, eigen.res, sample.id, snp.id, eigen.cnt = 0, FALSE)
+test_that("seqPCAClass passes when the input is correct",
+{
+  expect_is(res, "seqPCAClass")
+  expect_identical(res$genmat, NULL)
+  expect_equal(length(res$eigenval), length(sample.id))
+  expect_equal(dim(res$eigenvect)[2], length(sample.id))
+})
