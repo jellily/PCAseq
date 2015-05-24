@@ -1,7 +1,3 @@
-# seqGRM
-# this funciton needs work beuase it doesn't interact properly with make.snpgdsPCAClass
-# there are several slots from that class which are empty if we are only making the GRM
-
 seqGRM <- function(gdsobj, method, sample.id = NULL, snp.id = NULL, 
                    autosome.only = TRUE, remove.monosnp = TRUE, maf = NaN, 
                    missing.rate = NaN, verbose = TRUE){
