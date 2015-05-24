@@ -1,5 +1,3 @@
-# Functions to filter the SNPs based on parameters passed in by the user
-
 # filterSnps -------------------------------------------------------------------
 # Subset the genotype data set by removing SNPs based on parameters passed in
 
@@ -18,7 +16,7 @@ filterSnps <- function(snps, autosomeOnly, removeMonosnp, missingRate, maf,
 
   # remove snps with too much missingness
   if (!is.nan(missingRate)){
-    snps <- filterMiss(snps, missingRate)
+    snps <- filterMiss(snps, missing.rate)
   }
 
   # filter based on MAF
@@ -34,6 +32,7 @@ filterSnps <- function(snps, autosomeOnly, removeMonosnp, missingRate, maf,
 # Remove monomorphic snps
 
 filterMono <-function(snps){
+<<<<<<< HEAD
 
   # find the allele frequencies
   alleleFreq <- 0.5*rowMeans(snps, na.rm = TRUE)
@@ -76,8 +75,7 @@ filterAuto <-function(snps, snpChromosome){
 
 filterMiss <-function(snps, missingRate){
 
-  # replace the missing code 3 with
-  # NA
+  # replace the missing code 3 with NA
   snps[snps == 3] <- NA
 
   # find the proportion missing for each SNP
@@ -95,8 +93,6 @@ filterMiss <-function(snps, missingRate){
   } else {
     return(snps)
   }
-
-  return(snps)
 }
 
 # filterMaf --------------------------------------------------------------------
@@ -105,11 +101,8 @@ filterMiss <-function(snps, missingRate){
 
 filterMaf <-function(snps, maf){
 
-  print(maf)
-
   # find the allele frequencies
   alleleFreq <- 0.5*rowMeans(snps, na.rm = TRUE)
-  print(summary(alleleFreq))
 
   # different filtering based on what value is specified
   if (length(maf) == 1){

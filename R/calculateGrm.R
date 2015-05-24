@@ -3,7 +3,6 @@
 # runGRM -----------------------------------------------------------------------
 # Open the GDS file and check the orientation of the genotype data; call the
 # appropriate GRM method
-
 runGRM <- function(gdsobj, method, sampleId, snpId, autosomeOnly, removeMonosnp,
                     maf, missingRate){
   # Open the file
@@ -52,9 +51,9 @@ runGRM <- function(gdsobj, method, sampleId, snpId, autosomeOnly, removeMonosnp,
 
 # grmEigen ---------------------------------------------------------------------
 # Calculate the GRM using the method in Price et al 2006
-
 grmEigen <- function(genoDat, sampleId, snpId, autosomeOnly, removeMonosnp,
                      maf, missingRate, transpose){
+
   # constants
   nBlocks <- 5000
   byRows <- 1
@@ -78,7 +77,6 @@ grmEigen <- function(genoDat, sampleId, snpId, autosomeOnly, removeMonosnp,
     # Read in the relevant SNP data, subsetting by subject
     snpDat <- snpgdsGetGeno(genoDat, snp.id = snpId[snps], sample.id = sampleId)
     snpChrom <- read.gdsn(index.gdsn(genoDat,"snp.chromosome"))[snps]
-
 
     # Transpose data into SNPs x Samples
     if (transpose == TRUE)
@@ -108,8 +106,7 @@ grmEigen <- function(genoDat, sampleId, snpId, autosomeOnly, removeMonosnp,
 # grmPcaseq --------------------------------------------------------------------
 
 grmPcaseq <- function(genoDat, sampleId, snpId, autosomeOnly, removeMonosnp,
-                      maf, missingRate, transpose)
-{
+                      maf, missingRate, transpose){
   # constants
   nBlocks <- 5000
   byRows <- 1
@@ -134,6 +131,7 @@ grmPcaseq <- function(genoDat, sampleId, snpId, autosomeOnly, removeMonosnp,
     snpDat <- snpgdsGetGeno(genoDat, snp.id = snpId[snps], sample.id = sampleId)
     snpChrom <- read.gdsn(index.gdsn(genoDat,"snp.chromosome"))[snps]
     print(length(snpChrom))
+
 
     # Transpose data into SNPs x Samples
     if (transpose)
@@ -163,7 +161,6 @@ grmPcaseq <- function(genoDat, sampleId, snpId, autosomeOnly, removeMonosnp,
 
 # getIndex ---------------------------------------------------------------------
 # function to calculate the index for the current block of SNPs
-
 getIndex <- function(i, nBlock, nSnps)
 {
   index <- (1:nBlock) + (i - 1) * nBlock
