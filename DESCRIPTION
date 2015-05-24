@@ -11,8 +11,10 @@ Description: This package implements the PCA-seq method for inferring genetic
   can be subset by both minimum and maxium MAF values. The results are 
   compatible with SNPRelate functions such as snpgdsLoadings and snpgdsPCACorr.
 License: GPL-3
-Suggests: testthat
 Depends: R (>= 3.2.0)
-Imports: SNPRelate, gdsfmt
-Suggests: matrixcalc
+Imports: SNPRelate (>= 1.2.0), 
+         gdsfmt (>= 1.4.0)
+Suggests: matrixcalc (>= 1.0-3),
+          testthat, 
+          lintr
 LazyData: true
