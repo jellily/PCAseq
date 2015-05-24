@@ -3,28 +3,29 @@
 # filterSnps -------------------------------------------------------------------
 # Subset the genotype data set by removing SNPs based on parameters passed in
 
-filterSnps <- function(snps, autosomeOnly, removeMonosnp, missingRate, maf, 
+filterSnps <- function(snps, autosomeOnly, removeMonosnp, missingRate, maf,
                        snpChromosome){
-  # remove monomorphic snps
-  if (removeMonosnp){
-    snps <- filterMono(snps)
-  }
-  
+
   # remove sex chromosome snps
   if (autosomeOnly){
     snps <- filterAuto(snps, snpChromosome)
   }
-  
+
+  # remove monomorphic snps
+  if (removeMonosnp){
+    snps <- filterMono(snps)
+  }
+
   # remove snps with too much missingness
   if (!is.nan(missingRate)){
     snps <- filterMiss(snps, missingRate)
   }
-  
+
   # filter based on MAF
-  if (!is.nan(maf)){
+  if (length(maf) != 1){
     snps <- filterMaf(snps, maf)
   }
-  
+
   return(snps)
 }
 
@@ -33,16 +34,16 @@ filterSnps <- function(snps, autosomeOnly, removeMonosnp, missingRate, maf,
 # Remove monomorphic snps
 
 filterMono <-function(snps){
-  
+
   # find the allele frequencies
   alleleFreq <- 0.5*rowMeans(snps, na.rm = TRUE)
-  
+
   # remove monomorphic SNPs
   snps <- snps[alleleFreq > 0 & alleleFreq < 1, ]
-  
+
   # check to make sure there are still SNPs in the data set
   if (class(snps) != "matrix" | nrow(snps) == 0){
-    stop("All SNPs are monomorphic. No data remains after removing monomorphic 
+    stop("All SNPs are monomorphic. No data remains after removing monomorphic
          SNPs.")
   } else if (nrow(snps) < 50){
     message("Fewer than 50 SNPs remain after removing monomorphic SNPs.")
@@ -56,16 +57,16 @@ filterMono <-function(snps){
 # Subset SNPs to only those on the autosomal chromosomes
 
 filterAuto <-function(snps, snpChromosome){
-  
+
   autosomeCodes <- as.character(1:22)
-  
+
   # Convert the vector of SNP choromosome labels to numeric
   # Any character label will become NA
   snpChromosome <- as.character(snpChromosome)
-  
+
   # Select only those SNPs with chromosome labels 1-22 (autosomes)
-  snps <- snps[snpChromosome %in% autosomeCodes, ]
-  
+  snps <- snps[which(snpChromosome %in% autosomeCodes), ]
+
   return(snps)
 }
 
@@ -74,16 +75,16 @@ filterAuto <-function(snps, snpChromosome){
 # Subset the SNPs to those with missingness rates less than missingRate
 
 filterMiss <-function(snps, missingRate){
-  
+
   # replace the missing code 3 with
   # NA
   snps[snps == 3] <- NA
-  
+
   # find the proportion missing for each SNP
   missing <- getMissRate(snps)
-  
+
   snps <- snps[missing <= missingRate, ]
-  
+
   # check to make sure there are still SNPs in the data set
   if (class(snps) != "matrix" | nrow(snps) == 0){
     stop("All SNPs have missing rates above specified threshold. No data remains
@@ -94,7 +95,7 @@ filterMiss <-function(snps, missingRate){
   } else {
     return(snps)
   }
-  
+
   return(snps)
 }
 
@@ -103,21 +104,24 @@ filterMiss <-function(snps, missingRate){
 # or in the range specified (if two values)
 
 filterMaf <-function(snps, maf){
-  
+
+  print(maf)
+
   # find the allele frequencies
   alleleFreq <- 0.5*rowMeans(snps, na.rm = TRUE)
-  
+  print(summary(alleleFreq))
+
   # different filtering based on what value is specified
   if (length(maf) == 1){
     snps <- snps[alleleFreq > maf & alleleFreq < (1 - maf), ]
   } else { #  if length(maf) == 2
     min <- maf[1]
     max <- maf[2]
-    
+
     snps <- snps[alleleFreq >= min & alleleFreq <= max |
                    alleleFreq >= (1 - max) & alleleFreq <= (1 - min), ]
   }
-  
+
   # check to make sure there are still SNPs in the data set
   if (class(snps) != "matrix" | nrow(snps) == 0){
     stop("All SNPs have MAF below specified threshold. No data remains after MAF
@@ -135,13 +139,13 @@ filterMaf <-function(snps, maf){
 
 getMissRate <- function(snps){
   byRows <- 1
-  
+
   # function to calculate the proportion missing for one snp
   propMiss <- function(snp){
     mean(ifelse(is.na(snp), 1, 0))
   }
-  
+
   missing <- apply(snps, byRows, FUN = propMiss)
-  
+
   return(missing)
 }
