@@ -24,10 +24,11 @@ checkBool <- function(bool){
 checkEcnt <- function(ecnt){
   if (is.numeric(ecnt)){
     if (length(ecnt) == 1){
-      if(as.integer(ecnt) == ecnt){ 
+      if(as.integer(ecnt) == ecnt & ecnt >= 0){ 
         return(TRUE)
       } else {
-        stop("Number of eigenvectors to return should be a counting number.")
+        stop("Number of eigenvectors to return should be a non-negative 
+             integer.")
       }
     } else {
       stop("Can only specify one value for the number of eigenvectors 
@@ -35,7 +36,7 @@ checkEcnt <- function(ecnt){
     }
   } else {
     stop("Number of eigenvalues and eigenvectors to return should be a 
-         counting number." )
+         non-negative integer." )
   }
 }
 
