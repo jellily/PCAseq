@@ -32,7 +32,6 @@ filterSnps <- function(snps, autosomeOnly, removeMonosnp, missingRate, maf,
 # Remove monomorphic snps
 
 filterMono <-function(snps){
-<<<<<<< HEAD
 
   # find the allele frequencies
   alleleFreq <- 0.5*rowMeans(snps, na.rm = TRUE)
@@ -40,16 +39,7 @@ filterMono <-function(snps){
   # remove monomorphic SNPs
   snps <- snps[alleleFreq > 0 & alleleFreq < 1, ]
 
-  # check to make sure there are still SNPs in the data set
-  if (class(snps) != "matrix" | nrow(snps) == 0){
-    stop("All SNPs are monomorphic. No data remains after removing monomorphic
-         SNPs.")
-  } else if (nrow(snps) < 50){
-    message("Fewer than 50 SNPs remain after removing monomorphic SNPs.")
-    return(snps)
-  } else {
-    return(snps)
-  }
+  return(snps)
 }
 
 # filterAuto -------------------------------------------------------------------
@@ -80,19 +70,9 @@ filterMiss <-function(snps, missingRate){
 
   # find the proportion missing for each SNP
   missing <- getMissRate(snps)
-
   snps <- snps[missing <= missingRate, ]
 
-  # check to make sure there are still SNPs in the data set
-  if (class(snps) != "matrix" | nrow(snps) == 0){
-    stop("All SNPs have missing rates above specified threshold. No data remains
-          after missingness filtering.")
-  } else if (nrow(snps) < 50){
-    message("Fewer than 50 SNPs remain after filtering by missing rate.")
-    return(snps)
-  } else {
-    return(snps)
-  }
+  return(snps)
 }
 
 # filterMaf --------------------------------------------------------------------
@@ -115,16 +95,7 @@ filterMaf <-function(snps, maf){
                    alleleFreq >= (1 - max) & alleleFreq <= (1 - min), ]
   }
 
-  # check to make sure there are still SNPs in the data set
-  if (class(snps) != "matrix" | nrow(snps) == 0){
-    stop("All SNPs have MAF below specified threshold. No data remains after MAF
-         filtering.")
-  } else if (nrow(snps) < 50){
-    message("Fewer than 50 SNPs remain after filtering by MAF.")
-    return(snps)
-  } else {
-    return(snps)
-  }
+  return(snps)
 }
 
 # getMissRate ------------------------------------------------------------------

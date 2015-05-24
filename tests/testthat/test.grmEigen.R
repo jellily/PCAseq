@@ -89,3 +89,17 @@ snpgdsClose(test.file)
 #                snprelate.res)
 # })
 # snpgdsClose(test.file)
+
+# Example 4
+# test.file <- snpgdsOpen("ex4.gds", allow.duplicate = TRUE)
+# samp.id <- read.gdsn(index.gdsn(test.file, "sample.id"))
+# snp.id <- read.gdsn(index.gdsn(test.file, "snp.id"))
+# 
+# test_that("grmEigen returns an error when the GRM is empty (matrix of zeros)",
+# {
+#   expect_error(grmEigen(test.file, sampleId = samp.id, snpId = snp.id, autosomeOnly = FALSE,
+#                removeMonosnp = FALSE, maf = NaN, missingRate = NaN, transpose = FALSE))
+# })
+# 
+# snpgdsClose(test.file)
+
