@@ -69,9 +69,13 @@ seqPCA <- function(gdsobj, method, sample.id = NULL, snp.id = NULL,
 
 
   # Find the GRM
-  grm <- runGRM(gdsobj, method, sample.id, snp.id, autosome.only,
+  grmRes<- runGRM(gdsobj, method, sample.id, snp.id, autosome.only,
                 remove.monosnp, maf, missing.rate)
 
+  grm <- grmRes[[1]]
+  sampleId <- grmRes[[2]]
+  snpId <- grmRes[[3]] # fix this to actully return the list of SNPs use
+  
   # Check if the GRM only has one entry
   if (dim(grm)[1] == 1 | dim(grm)[2] == 1 | class(grm) != "matrix")
   {
@@ -80,8 +84,8 @@ seqPCA <- function(gdsobj, method, sample.id = NULL, snp.id = NULL,
 
   # Find the eigendecomposition
   eigenRes <- eigen(grm)
-
+  
   # Return the appropriate object
-  seqPCAClass(grm, method, maf, eigenRes, sample.id, snp.id, eigen.cnt,
+  seqPCAClass(grm, method, maf, eigenRes, sampleId, snpId, eigen.cnt,
               need.genmat)
 }

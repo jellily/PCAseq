@@ -48,7 +48,7 @@ runGRM <- function(gdsobj, method, sampleId, snpId, autosomeOnly, removeMonosnp,
   # Close the file
   snpgdsClose(genoDat)
 
-  return(grm)
+  return(list(grm, sampleId, snpId))
 }
 
 
