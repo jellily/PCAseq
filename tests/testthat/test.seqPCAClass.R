@@ -36,7 +36,8 @@ test_that("seqPCAClass passes when the input is correct",
 })
 
 
-res <- seqPCAClass(grm, method, maf = NaN, eigen.res, sample.id, snp.id, eigenCnt = 0, FALSE)
+res <- seqPCAClass(grm, method, maf = NaN, eigen.res, sample.id, snp.id, 
+                   eigenCnt = 0, FALSE)
 test_that("seqPCAClass passes when the input is correct",
 {
   expect_is(res, "seqPCAClass")
@@ -46,7 +47,8 @@ test_that("seqPCAClass passes when the input is correct",
 })
 
 
-res <- seqPCAClass(grm, method, eigen.res, sample.id, snp.id, eigen.cnt = 0, FALSE)
+res <- seqPCAClass(grm, method, maf = NaN, eigen.res, sample.id, snp.id, 
+                   eigenCnt = 0, FALSE)
 test_that("seqPCAClass passes when the input is correct",
 {
   expect_is(res, "seqPCAClass")

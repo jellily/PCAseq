@@ -12,7 +12,7 @@ snp.id <- read.gdsn(index.gdsn(test.file, "snp.id"))
 test_that("grmPcaseq returns the appropriate GRM matrix",
 {
   expect_equal(grmPcaseq(test.file, sampleId = samp.id, snpId = snp.id, autosomeOnly = FALSE, 
-                         removeMonosnp = FALSE, maf = NaN, missingRate = NaN, transpose = FALSE), 
+                         removeMonosnp = FALSE, maf = NaN, missingRate = NaN, transpose = FALSE)[[1]], 
               my.res)
 })
 snpgdsClose(test.file)

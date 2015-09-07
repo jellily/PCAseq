@@ -13,10 +13,10 @@ snp.id <- read.gdsn(index.gdsn(test.file, "snp.id"))
 test_that("grmEigen returns the appropriate GRM matrix and that it is equivalent to SNPRelate",
 {
   expect_equal(grmEigen(test.file, sampleId = samp.id, snpId = snp.id, autosomeOnly = FALSE, 
-                             removeMonosnp = FALSE, maf = NaN, missingRate = NaN, transpose = FALSE), 
+                             removeMonosnp = FALSE, maf = NaN, missingRate = NaN, transpose = FALSE)[[1]], 
                    my.res)
   expect_equal(grmEigen(test.file, sampleId = samp.id, snpId = snp.id, autosomeOnly = FALSE, 
-                         removeMonosnp = FALSE, maf = NaN, missingRate = NaN, transpose = FALSE), 
+                         removeMonosnp = FALSE, maf = NaN, missingRate = NaN, transpose = FALSE)[[1]], 
                snprelate.res)
 })
 snpgdsClose(test.file)
