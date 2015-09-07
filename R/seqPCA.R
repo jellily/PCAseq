@@ -3,6 +3,8 @@
 #' This function calculates the Genetic Relatedness Matrix (GRM) on a GDS file
 #' using the PCA-seq method for sequence data.
 #'
+#' @aliases seqGRM
+#'
 #' @param gdsobj an object of the class SNPGDSFileClass, a SNP GDS file.
 #' @param method a string, either "eigen" or "pcaseq", indicating which method
 #' to use to calculate the GRM; see Details.
@@ -32,7 +34,6 @@
 #' need to subset by both a minimum and maximum MAF, the
 #' \code{\link[SNPRelate]{snpgdsPCA}} function will be faster.
 #'
-#' @aliases seqGRM
 #'
 #' @return Return a \code{snpPCAClass} object, a list with the follow slots:
 #' \describe{
@@ -69,7 +70,7 @@ seqPCA <- function(gdsobj, method, sample.id = NULL, snp.id = NULL,
 
 
   # Find the GRM
-  grmRes<- runGRM(gdsobj, method, sample.id, snp.id, autosome.only,
+  grmRes <- runGRM(gdsobj, method, sample.id, snp.id, autosome.only,
                 remove.monosnp, maf, missing.rate)
 
   grm <- grmRes[[1]]
