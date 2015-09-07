@@ -13,6 +13,8 @@ runGRM <- function(gdsobj, method, sampleId, snpId, autosomeOnly, removeMonosnp,
   # has no duplicates and contains sample ids in the
   # file sample.id vector
   samples <- read.gdsn(index.gdsn(genoDat, "sample.id"))
+  print(sampleId)
+  print(samples)
   if (is.null(sampleId)){
     sampleId <- samples
   } else {
@@ -48,7 +50,7 @@ runGRM <- function(gdsobj, method, sampleId, snpId, autosomeOnly, removeMonosnp,
   # Close the file
   snpgdsClose(genoDat)
 
-  return(list(grm, sampleId, snpId))
+  return(list(grm[[1]], samples, snpId[[2]]))
 }
 
 
@@ -65,7 +67,7 @@ grmEigen <- function(genoDat, sampleId, snpId, autosomeOnly, removeMonosnp,
   nSnps <- length(snpId)
   emptyMat <- matrix(0, nrow = nSubj, ncol = nSubj)
   max <- ceiling(nSnps / nBlocks)  # maximum number of blocks to loop over
-
+  
   # create empty grm & vector to count the number of snps used
   grm <- matrix(0, nrow = nSubj, ncol = nSubj)
   totalSnps <- 0
@@ -77,28 +79,28 @@ grmEigen <- function(genoDat, sampleId, snpId, autosomeOnly, removeMonosnp,
 
     # Get the SNPs to choose
     snps <- getIndex(i, nBlocks, nSnps)
-    
+
     # Read in the relevant SNP data, subsetting by subject
     snpDat <- snpgdsGetGeno(genoDat, snp.id = snpId[snps], sample.id = sampleId)
     snpChrom <- read.gdsn(index.gdsn(genoDat,"snp.chromosome"))[snps]
 
     # Transpose data into SNPs x Samples
-    if (isTRUE(transpose))
-    {
+    if ( isTRUE(transpose) ){
       snpDat <- t(snpDat)
     }
 
     # Filter the data
-    snpDat <- filterSnps(snpDat, autosomeOnly, removeMonosnp, missingRate,
+    snpInfo <- filterSnps(snps, snpDat, autosomeOnly, removeMonosnp, missingRate,
                           maf, snpChrom)
-
+    snps <- snpInfo[[1]]
+    snpDat <- snpInfo[[2]]
+    
     # check to make sure there are still SNPs in the data set
     if (!(identical(class(snpDat), "matrix")) | identical(nrow(snpDat), 0)){
       message("No data remains in this block after filtering. Going to next
                 block.")
       next
     } else {
-      totalSnps <- dim(snpDat)[byRows] # total # of snps
       alleleFreq <- (1 / nCopies) * rowMeans(snpDat, na.rm = TRUE)
 
       # Estimate the variance at each SNP
@@ -116,8 +118,9 @@ grmEigen <- function(genoDat, sampleId, snpId, autosomeOnly, removeMonosnp,
     stop("GRM is the zero matrix. Perhaps all of the SNPs were removed when
          filtering or there is no variability in the genotype data.")
   } else {
+    totalSnps <- length(snps)
     grm <- (1 / totalSnps) * grm
-    return(grm)
+    return(list(grm, snps))
   }
 }
 
@@ -133,7 +136,7 @@ grmPcaseq <- function(genoDat, sampleId, snpId, autosomeOnly, removeMonosnp,
   nSnps <- length(snpId)
   emptyMat <- matrix(0, nrow = nSubj, ncol = nSubj)
   max <- ceiling(nSnps / nBlocks)  #  maximum number of blocks to loop over
-  
+
   # create empty grm & vector to store the allele frequencies
   grm <- emptyMat
   allelePs <- c()
@@ -158,8 +161,10 @@ grmPcaseq <- function(genoDat, sampleId, snpId, autosomeOnly, removeMonosnp,
     }
 
     # Filter the data
-    snpDat <- filterSnps(snpDat, autosomeOnly, removeMonosnp, missingRate,
+    snpInfo <- filterSnps(snps, snpDat, autosomeOnly, removeMonosnp, missingRate,
                           maf, snpChrom)
+    snps <- snpInfo[[1]]
+    snpDat <- snpInfo[[2]]
 
     # check to make sure there are still SNPs in the data set
       if (!(identical(class(snpDat), "matrix")) | identical(nrow(snpDat), 0)){
@@ -186,7 +191,7 @@ grmPcaseq <- function(genoDat, sampleId, snpId, autosomeOnly, removeMonosnp,
   } else {
     sigmaPcaseq <- sum(nCopies * allelePs * (1 - allelePs)) # standard deviation
     grm <- grm / sigmaPcaseq
-    return(grm)
+    return(list(grm, snps))
   }
 
 }

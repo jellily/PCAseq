@@ -1,43 +1,50 @@
 # filterSnps -------------------------------------------------------------------
 # Subset the genotype data set by removing SNPs based on parameters passed in
-
-filterSnps <- function(snps, autosomeOnly, removeMonosnp, missingRate, maf,
+filterSnps <- function(snps, snpDat, autosomeOnly, removeMonosnp, missingRate, maf,
                        snpChromosome){
-
+  print(dim(snpDat))
   # remove sex chromosome snps
   if (autosomeOnly){
-    snps <- filterAuto(snps, snpChromosome)
+    index <- filterAuto(snpChromosome)
+    print(length(index))
+    snps <- snps[index]
+    snpDat <- snpDat[index, ]
   }
 
   # remove monomorphic snps
   if (removeMonosnp){
-    snps <- filterMono(snps)
+    index <- filterMono(snpDat)
+    snps <- snps[index]
+    snpDat <- snpDat[index, ]
   }
 
   # remove snps with too much missingness
   if (!is.nan(missingRate)){
-    snps <- filterMiss(snps, missing.rate)
+    index <- filterMiss(snps, snpDat, missing.rate)
+    snps <- snps[index]
+    snpDat <- snpDat[index, ]
   }
 
   # filter based on MAF
   if (length(maf) != 1){
-    snps <- filterMaf(snps, maf)
+    index <- filterMaf(snps, snpDat, maf)
+    snps <- snps[index]
+    snpDat <- snpDat[index, ]
   }
 
-  return(snps)
+  return(list(snps, snpDat))
 }
 
 
 # filterMono -------------------------------------------------------------------
 # Remove monomorphic snps
-
-filterMono <-function(snps){
+filterMono <-function(snpDat){
 
   # find the allele frequencies
-  alleleFreq <- 0.5*rowMeans(snps, na.rm = TRUE)
+  alleleFreq <- 0.5*rowMeans(snpDat, na.rm = TRUE)
 
   # remove monomorphic SNPs
-  snps <- snps[alleleFreq > 0 & alleleFreq < 1, ]
+  snps <- which(alleleFreq > 0 & alleleFreq < 1)
 
   return(snps)
 }
@@ -45,7 +52,7 @@ filterMono <-function(snps){
 # filterAuto -------------------------------------------------------------------
 # Subset SNPs to only those on the autosomal chromosomes
 
-filterAuto <-function(snps, snpChromosome){
+filterAuto <-function(snpChromosome){
 
   autosomeCodes <- as.character(1:22)
 
@@ -54,7 +61,7 @@ filterAuto <-function(snps, snpChromosome){
   snpChromosome <- as.character(snpChromosome)
 
   # Select only those SNPs with chromosome labels 1-22 (autosomes)
-  snps <- snps[which(snpChromosome %in% autosomeCodes), ]
+  snps <- which(snpChromosome %in% autosomeCodes)
 
   return(snps)
 }
@@ -63,14 +70,14 @@ filterAuto <-function(snps, snpChromosome){
 # filterMiss -------------------------------------------------------------------
 # Subset the SNPs to those with missingness rates less than missingRate
 
-filterMiss <-function(snps, missingRate){
+filterMiss <-function(snpDat, missingRate){
 
   # replace the missing code 3 with NA
-  snps[snps == 3] <- NA
+  snpDat[snpDat == 3] <- NA
 
   # find the proportion missing for each SNP
-  missing <- getMissRate(snps)
-  snps <- snps[missing <= missingRate, ]
+  missing <- getMissRate(snpDat)
+  snps <- which(missing <= missingRate)
 
   return(snps)
 }
@@ -79,20 +86,20 @@ filterMiss <-function(snps, missingRate){
 # Subset the SNPs to those with MAFs either greater than maf (if a single value)
 # or in the range specified (if two values)
 
-filterMaf <-function(snps, maf){
+filterMaf <-function(snpDat, maf){
 
   # find the allele frequencies
-  alleleFreq <- 0.5*rowMeans(snps, na.rm = TRUE)
+  alleleFreq <- 0.5*rowMeans(snpDat, na.rm = TRUE)
 
   # different filtering based on what value is specified
   if (length(maf) == 1){
-    snps <- snps[alleleFreq > maf & alleleFreq < (1 - maf), ]
+    snps <- which(alleleFreq > maf & alleleFreq < (1 - maf))
   } else { #  if length(maf) == 2
     min <- maf[1]
     max <- maf[2]
 
-    snps <- snps[alleleFreq >= min & alleleFreq <= max |
-                   alleleFreq >= (1 - max) & alleleFreq <= (1 - min), ]
+    snps <- which(alleleFreq >= min & alleleFreq <= max |
+                   alleleFreq >= (1 - max) & alleleFreq <= (1 - min))
   }
 
   return(snps)
