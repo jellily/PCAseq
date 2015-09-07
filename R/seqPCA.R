@@ -10,7 +10,7 @@
 #' to use to calculate the GRM; see Details.
 #' @param sample.id a vector of sample ids specifying the samples to use for
 #' analysis; if NULL, all samples are used.
-#' @param snp.id a vector of SNP ids specifying the SNps to use for analysis;
+#' @param snp.id a vector of SNP ids specifying the SNPs to use for analysis;
 #' if NULL, all SNPs are used.
 #' @param autosome.only if TRUE, use autosomal SNPs only; if it is a numeric or
 #' character vector, keep SNPs according to the specified chromosomes.
@@ -78,8 +78,7 @@ seqPCA <- function(gdsobj, method, sample.id = NULL, snp.id = NULL,
   snpId <- grmRes[[3]] # fix this to actully return the list of SNPs use
   
   # Check if the GRM only has one entry
-  if (dim(grm)[1] == 1 | dim(grm)[2] == 1 | class(grm) != "matrix")
-  {
+  if (dim(grm)[1] == 1 | dim(grm)[2] == 1 | class(grm) != "matrix"){
     warning("GRM has only one entry.")
   }
 

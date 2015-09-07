@@ -1,12 +1,11 @@
 # filterSnps -------------------------------------------------------------------
 # Subset the genotype data set by removing SNPs based on parameters passed in
-filterSnps <- function(snps, snpDat, autosomeOnly, removeMonosnp, missingRate, maf,
-                       snpChromosome){
-  print(dim(snpDat))
+filterSnps <- function(snps, snpDat, autosomeOnly, removeMonosnp, missingRate,
+                       maf, snpChromosome){
+
   # remove sex chromosome snps
   if (autosomeOnly){
     index <- filterAuto(snpChromosome)
-    print(length(index))
     snps <- snps[index]
     snpDat <- snpDat[index, ]
   }
@@ -20,14 +19,14 @@ filterSnps <- function(snps, snpDat, autosomeOnly, removeMonosnp, missingRate, m
 
   # remove snps with too much missingness
   if (!is.nan(missingRate)){
-    index <- filterMiss(snps, snpDat, missing.rate)
+    index <- filterMiss(snpDat, missingRate)
     snps <- snps[index]
     snpDat <- snpDat[index, ]
   }
 
   # filter based on MAF
   if (length(maf) != 1){
-    index <- filterMaf(snps, snpDat, maf)
+    index <- filterMaf(snpDat, maf)
     snps <- snps[index]
     snpDat <- snpDat[index, ]
   }

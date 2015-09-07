@@ -13,17 +13,17 @@ runGRM <- function(gdsobj, method, sampleId, snpId, autosomeOnly, removeMonosnp,
   # has no duplicates and contains sample ids in the
   # file sample.id vector
   samples <- read.gdsn(index.gdsn(genoDat, "sample.id"))
-  print(sampleId)
-  print(samples)
+
   if (is.null(sampleId)){
     sampleId <- samples
   } else {
     checkSamp(sampleId, samples)
   }
 
-  # if no SNP ids are given, take all of them
+  # if no SNP IDs are given, take all of them
   # (note SNP filtering happens at a later time point)
   snps <- read.gdsn(index.gdsn(genoDat, "snp.id"))
+  
   if (is.null(snpId)){
     snpId <- snps
   } else {
