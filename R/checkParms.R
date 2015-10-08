@@ -46,29 +46,8 @@ checkEcnt <- function(ecnt){
 # second value.
 
 checkMaf <- function(maf){
-  if (is.numeric(maf)){
-    if (length(maf) == 1){
-      if (is.nan(maf)){
-        return(TRUE)
-      } else if(maf >= 0 & maf <= 0.5) {
-        return(TRUE)
-      } else {
-        stop("MAF needs to be between 0 and 0.5. See help(seqPCA) for more
-             details.")
-      }
-    } else if(length(maf) == 2) {
-      if(maf[1] >= 0 & maf[2] > maf[1] & maf[2] <= 0.5) {
-        return(TRUE)
-      } else {
-        stop("If MAF is a vector of length 2, please specify (min, max) in
-             [0, 0.5]. See help(seqPCA) for more details.")
-      }
-    } else {
-      stop("MAF needs to be of length 1 or 2. See help(seqPCA) for more
-           details.")
-    }
-  } else {
-    stop("MAF should be numeric. See help(seqPCA) for more details.")
+  if (!is.na(maf) & !is.character(maf)){
+    stop("MAF should be NA or a character. See help(seqPCA) for more details.")
   }
 
 }
