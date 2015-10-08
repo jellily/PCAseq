@@ -48,8 +48,33 @@ checkEcnt <- function(ecnt){
 checkMaf <- function(maf){
   if (!is.na(maf) & !is.character(maf)){
     stop("MAF should be NA or a character. See help(seqPCA) for more details.")
+  } else  if(is.character(maf)){
+    mafMin <- as.numeric(mafBound(maf, 1))
+    mafMax <- as.numeric(mafBound(maf, 2))
+    
+    if(mafMin < 0 | mafMax > 0.5 | mafMin >= mafMax)
+    {
+      stop("MAF bounds should be between 0 and 0.5 and given in min, max order.")
+    } else {
+      return(TRUE)
+    } 
+  } else if(is.na(maf)){
+    return(TRUE)
   }
+}
 
+
+# function to get the MAF endpoints and check for consistency
+mafBound <- function(maf, num){
+  mafs <- unlist(strsplit(maf, split = ","))
+  mafVal <- mafs[num]
+  
+  mafVal <- gsub("[", "", mafVal, fixed = TRUE)
+  mafVal <- gsub("]", "", mafVal, fixed = TRUE)
+  mafVal <- gsub("(", "", mafVal, fixed = TRUE)
+  mafVal <- gsub(")", "", mafVal, fixed = TRUE)
+  
+  return(mafVal)
 }
 
 

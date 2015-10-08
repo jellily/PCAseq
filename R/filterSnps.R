@@ -25,7 +25,7 @@ filterSnps <- function(snps, snpDat, autosomeOnly, removeMonosnp, missingRate,
   }
 
   # filter based on MAF
-  if (length(maf) != 1){
+  if (!is.na(maf)){
     index <- filterMaf(snpDat, maf)
     snps <- snps[index]
     snpDat <- snpDat[index, ]
@@ -89,20 +89,29 @@ filterMaf <-function(snpDat, maf){
 
   # find the allele frequencies
   alleleFreq <- 0.5*rowMeans(snpDat, na.rm = TRUE)
-
-  # different filtering based on what value is specified
-  if (length(maf) == 1){
-    snps <- which(alleleFreq > maf & alleleFreq < (1 - maf))
-  } else { #  if length(maf) == 2
-    min <- maf[1]
-    max <- maf[2]
-
-    snps <- which(alleleFreq >= min & alleleFreq <= max |
-                   alleleFreq >= (1 - max) & alleleFreq <= (1 - min))
+  
+  mafMin <- mafBound(maf, 1)
+  mafMax <- mafBound(maf, 2)
+  
+  lowerBound <- substr(maf, 1, 1)
+  upperBound <- substr(maf, nchar(maf), nchar(maf))
+  
+  # subset based on the interval specified
+  # four options ( ), ( ], [ ), and [ ]
+  if(lowerBound  == "(" & upperBound == ")"){
+    snps <- which(alleleFreq > minMaf & alleleFreq < maxMaf)
+  } else if (lowerBound == "(" & upperBound == "]"){
+    snps <- which(alleleFreq > minMaf & alleleFreq <= maxMaf)
+  } else if (lowerBound == "[" & upperBound == ")"){
+    snps <- which(alleleFreq >= minMaf & alleleFreq < maxMaf)
+  }else{
+    snps <- which(alleleFreq >= minMaf & alleleFreq <= maxMaf)
   }
-
   return(snps)
 }
+
+
+
 
 # getMissRate ------------------------------------------------------------------
 # Get the missingness rate for the SNPs
