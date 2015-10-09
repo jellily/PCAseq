@@ -3,7 +3,7 @@
 # Exmple 1
 # read in the solutions
 snprelate.res <- readRDS("snprelate-example-1.txt")
-my.res <- readRDS("eigen-example-1.txt")
+my.res <- read.table("eigen-example-1.txt")
 
 # open the test file
 test.file <- snpgdsOpen("ex1.gds")
@@ -12,11 +12,13 @@ snp.id <- read.gdsn(index.gdsn(test.file, "snp.id"))
 
 test_that("grmEigen returns the appropriate GRM matrix and that it is equivalent to SNPRelate",
 {
-  expect_equal(grmEigen(test.file, sampleId = samp.id, snpId = snp.id, autosomeOnly = FALSE, 
-                             removeMonosnp = FALSE, maf = NaN, missingRate = NaN, transpose = FALSE)[[1]], 
-                   my.res)
-  expect_equal(grmEigen(test.file, sampleId = samp.id, snpId = snp.id, autosomeOnly = FALSE, 
-                         removeMonosnp = FALSE, maf = NaN, missingRate = NaN, transpose = FALSE)[[1]], 
+  expect_equivalent(grmEigen(test.file, sampleId = samp.id, snpId = snp.id, 
+                        autosomeOnly = FALSE, removeMonosnp = FALSE, maf = NaN, 
+                        missingRate = NaN, transpose = FALSE)[[1]], 
+                   as.matrix(my.res))
+  expect_equal(grmEigen(test.file, sampleId = samp.id, snpId = snp.id, 
+                        autosomeOnly = FALSE, removeMonosnp = FALSE, maf = NaN, 
+                        missingRate = NaN, transpose = FALSE)[[1]], 
                snprelate.res)
 })
 snpgdsClose(test.file)

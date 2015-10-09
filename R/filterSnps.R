@@ -99,13 +99,13 @@ filterMaf <-function(snpDat, maf){
   # subset based on the interval specified
   # four options ( ), ( ], [ ), and [ ]
   if(lowerBound  == "(" & upperBound == ")"){
-    snps <- which(alleleFreq > minMaf & alleleFreq < maxMaf)
+    snps <- which(alleleFreq > mafMin & alleleFreq < mafMax)
   } else if (lowerBound == "(" & upperBound == "]"){
-    snps <- which(alleleFreq > minMaf & alleleFreq <= maxMaf)
+    snps <- which(alleleFreq > mafMin & alleleFreq <= mafMax)
   } else if (lowerBound == "[" & upperBound == ")"){
-    snps <- which(alleleFreq >= minMaf & alleleFreq < maxMaf)
-  }else{
-    snps <- which(alleleFreq >= minMaf & alleleFreq <= maxMaf)
+    snps <- which(alleleFreq >= mafMin & alleleFreq < mafMax)
+  } else {
+    snps <- which(alleleFreq >= mafMin & alleleFreq <= mafMax)
   }
   return(snps)
 }

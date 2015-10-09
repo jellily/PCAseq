@@ -2,7 +2,7 @@
 
 # Exmple 1
 # read in the solutions
-my.res <- readRDS("pcaseq-example-1.txt")
+my.res <- read.table("pcaseq-example-1.txt")
 
 # open the test file
 test.file <- snpgdsOpen("ex1.gds")
@@ -11,9 +11,10 @@ snp.id <- read.gdsn(index.gdsn(test.file, "snp.id"))
 
 test_that("grmPcaseq returns the appropriate GRM matrix",
 {
-  expect_equal(grmPcaseq(test.file, sampleId = samp.id, snpId = snp.id, autosomeOnly = FALSE, 
-                         removeMonosnp = FALSE, maf = NaN, missingRate = NaN, transpose = FALSE)[[1]], 
-              my.res)
+  expect_equivalent(grmPcaseq(test.file, sampleId = samp.id, snpId = snp.id, 
+                         autosomeOnly = FALSE, removeMonosnp = FALSE, maf = NaN, 
+                         missingRate = NaN, transpose = FALSE)[[1]], 
+              as.matrix(my.res))
 })
 snpgdsClose(test.file)
 

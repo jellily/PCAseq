@@ -46,7 +46,7 @@ checkEcnt <- function(ecnt){
 # second value.
 
 checkMaf <- function(maf){
-  if (!is.na(maf) & !is.character(maf)){
+  if (!is.na(maf) & !is.character(maf) | is.nan(maf)){
     stop("MAF should be NA or a character. See help(seqPCA) for more details.")
   } else  if(is.character(maf)){
     mafMin <- as.numeric(mafBound(maf, 1))
@@ -73,6 +73,8 @@ mafBound <- function(maf, num){
   mafVal <- gsub("]", "", mafVal, fixed = TRUE)
   mafVal <- gsub("(", "", mafVal, fixed = TRUE)
   mafVal <- gsub(")", "", mafVal, fixed = TRUE)
+  
+  mafVal <- as.numeric(mafVal)
   
   return(mafVal)
 }

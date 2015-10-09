@@ -5,7 +5,6 @@
 \alias{seqPCA}
 \title{Run PCA-seq on a GDS file}
 \usage{
-
 seqPCA(gdsobj, method, sample.id = NULL, snp.id = NULL,
   autosome.only = TRUE, remove.monosnp = TRUE, maf = NaN,
   missing.rate = NaN, eigen.cnt = 32, need.genmat = FALSE,
@@ -20,7 +19,7 @@ to use to calculate the GRM; see Details.}
 \item{sample.id}{a vector of sample ids specifying the samples to use for
 analysis; if NULL, all samples are used.}
 
-\item{snp.id}{a vector of SNP ids specifying the SNps to use for analysis;
+\item{snp.id}{a vector of SNP ids specifying the SNPs to use for analysis;
 if NULL, all SNPs are used.}
 
 \item{autosome.only}{if TRUE, use autosomal SNPs only; if it is a numeric or
@@ -43,7 +42,6 @@ return all eigenvalues and vectors.}
 \item{verbose}{Not supported.}
 }
 \value{
-<<<<<<< HEAD
 Return a \code{snpPCAClass} object, a list with the follow slots:
 \describe{
 \item{\code{method}}{the method used to calculate the GRM}
@@ -58,7 +56,7 @@ component}
 \item{\code{TraceXTX}}{the trace of the genetic relateness matrix}
 \item{\code{Bayesian}}{indicates Bayes normalization; set to FALSE, as this is not
 currently supported}
-\item{\code{genmat}}{the genetic relateness matrix}} method the method used to calculate the GRM
+\item{\code{genmat}}{the genetic relateness matrix}}
 }
 \description{
 This function calculates the Genetic Relatedness Matrix (GRM) on a GDS file
@@ -74,14 +72,5 @@ EIGENSTRAT method as given in Patterson et al 2006. If \code{method} is
 If you need to run the EIGENSTRAT method on a very large data set and do not
 need to subset by both a minimum and maximum MAF, the
 \code{\link[SNPRelate]{snpgdsPCA}} function will be faster.
-
-\author{
-Jennifer L Kirk
-}
-
-
-\seealso{
-%% ~~objects to See Also as \code{\link{help}}, ~~~
-
 }
 
