@@ -99,13 +99,17 @@ filterMaf <-function(snpDat, maf){
   # subset based on the interval specified
   # four options ( ), ( ], [ ), and [ ]
   if(lowerBound  == "(" & upperBound == ")"){
-    snps <- which(alleleFreq > mafMin & alleleFreq < mafMax)
+    snps <- which((alleleFreq > mafMin & alleleFreq < mafMax) |
+                    (alleleFreq > (1 - mafMax) & alleleFreq < (1 - mafMin)))
   } else if (lowerBound == "(" & upperBound == "]"){
-    snps <- which(alleleFreq > mafMin & alleleFreq <= mafMax)
+    snps <- which((alleleFreq > mafMin & alleleFreq <= mafMax) |
+                    (allelleFreq > (1 - mafMax) & alleleFreq <= (1 - mafMin)))
   } else if (lowerBound == "[" & upperBound == ")"){
-    snps <- which(alleleFreq >= mafMin & alleleFreq < mafMax)
+    snps <- which((alleleFreq >= mafMin & alleleFreq < mafMax) |
+                    (alleleFreq >= (1 - mafMax) & alleleFreq < (1 - mafMin)))
   } else {
-    snps <- which(alleleFreq >= mafMin & alleleFreq <= mafMax)
+    snps <- which((alleleFreq >= mafMin & alleleFreq <= mafMax) |
+                    (alleleFreq >= (1 - mafMax) & alleleFreq <= (1 - mafMin)))
   }
   return(snps)
 }

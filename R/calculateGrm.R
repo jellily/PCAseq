@@ -95,31 +95,56 @@ grmEigen <- function(genoDat, sampleId, snpId, autosomeOnly, removeMonosnp,
     snps <- snpInfo[[1]]
     snpDat <- snpInfo[[2]]
     
+    print("postfilter:")
+    print(dim(snpDat)[1])
+    
     # check to make sure there are still SNPs in the data set
-    if (!(identical(class(snpDat), "matrix")) | identical(nrow(snpDat), 0)){
+    if ( !(identical(class(snpDat), "matrix")) | (dim(snpDat)[1] == 0) ){
+      print("empty subset")
       message("No data remains in this block after filtering. Going to next
                 block.")
-      next
+     next
     } else {
+      print("non-empty subset")
+      print(dim(snpDat))
+      
+      totalSnps <- totalSnps + length(snps)
+      
       alleleFreq <- (1 / nCopies) * rowMeans(snpDat, na.rm = TRUE)
-
+      
       # Estimate the variance at each SNP
       genoCent <- sweep(snpDat, byRows, STATS = nCopies * alleleFreq)
       sigmaEigen <- sqrt(alleleFreq * (1 - alleleFreq)) # standard deviation
 
       # Find the empirical correlation matrix
       zee <- sweep(genoCent, byRows, STATS = sigmaEigen, FUN = "/")
+      
       grm <- grm + crossprod(zee)
     }
   }
-
+  
   if (identical(grm, emptyMat))
   {
     stop("GRM is the zero matrix. Perhaps all of the SNPs were removed when
          filtering or there is no variability in the genotype data.")
   } else {
-    totalSnps <- length(snps)
+    print("min:")
+    print(min(grm))
+    
+    print("max:")
+    print(max(grm))
+    
+    print("total # snps:")
+    print(totalSnps)
+    
     grm <- (1 / totalSnps) * grm
+    
+    print("min:")
+    print(min(grm))
+    
+    print("max:")
+    print(max(grm))
+    
     return(list(grm, snps))
   }
 }
