@@ -95,19 +95,12 @@ grmEigen <- function(genoDat, sampleId, snpId, autosomeOnly, removeMonosnp,
     snps <- snpInfo[[1]]
     snpDat <- snpInfo[[2]]
     
-    print("postfilter:")
-    print(dim(snpDat)[1])
-    
     # check to make sure there are still SNPs in the data set
     if ( !(identical(class(snpDat), "matrix")) | (dim(snpDat)[1] == 0) ){
-      print("empty subset")
       message("No data remains in this block after filtering. Going to next
                 block.")
      next
     } else {
-      print("non-empty subset")
-      print(dim(snpDat))
-      
       totalSnps <- totalSnps + length(snps)
       
       alleleFreq <- (1 / nCopies) * rowMeans(snpDat, na.rm = TRUE)
@@ -128,23 +121,8 @@ grmEigen <- function(genoDat, sampleId, snpId, autosomeOnly, removeMonosnp,
     stop("GRM is the zero matrix. Perhaps all of the SNPs were removed when
          filtering or there is no variability in the genotype data.")
   } else {
-    print("min:")
-    print(min(grm))
-    
-    print("max:")
-    print(max(grm))
-    
-    print("total # snps:")
-    print(totalSnps)
     
     grm <- (1 / totalSnps) * grm
-    
-    print("min:")
-    print(min(grm))
-    
-    print("max:")
-    print(max(grm))
-    
     return(list(grm, snps))
   }
 }
