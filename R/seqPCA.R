@@ -6,8 +6,8 @@
 #' @aliases seqGRM
 #'
 #' @param gdsobj an object of the class SNPGDSFileClass, a SNP GDS file.
-#' @param method a string, either "eigen" or "pcaseq", indicating which method
-#' to use to calculate the GRM; see Details.
+#' @param weights a vector of two numbers, indicating the paraters to use 
+#' for the beta function weights; see Details.
 #' @param sample.id a vector of sample ids specifying the samples to use for
 #' analysis; if NULL, all samples are used.
 #' @param snp.id a vector of SNP ids specifying the SNPs to use for analysis;
@@ -37,7 +37,8 @@
 #'
 #' @return Return a \code{snpPCAClass} object, a list with the follow slots:
 #' \describe{
-#' \item{\code{method}}{the method used to calculate the GRM}
+#' \item{\code{weights}}{the parameters used to define the weights
+#'  used to calculate the GRM}
 #' \item{\code{maf}}{the MAF cutoffs used}
 #' \item{\code{sample.id}}{the sample ids used in the analysis}
 #' \item{\code{snp.id}}{the SNP ids used in the analysis}
@@ -51,12 +52,14 @@
 #' currently supported}
 #' \item{\code{genmat}}{the genetic relateness matrix}}
 
-seqPCA <- function(gdsobj, method, sample.id = NULL, snp.id = NULL,
+seqPCA <- function(gdsobj, weights = c(1, 1), sample.id = NULL, snp.id = NULL,
                    autosome.only = TRUE, remove.monosnp = TRUE, maf = NaN,
                    missing.rate = NaN, eigen.cnt = 32, need.genmat = FALSE,
                    verbose = TRUE){
 
   # Check the inputs for the appropriate classes and values
+  checkWeights(weights)
+  
   checkBool(autosome.only)
   checkBool(remove.monosnp)
   checkBool(need.genmat)
@@ -70,7 +73,7 @@ seqPCA <- function(gdsobj, method, sample.id = NULL, snp.id = NULL,
 
 
   # Find the GRM
-  grmRes <- runGRM(gdsobj, method, sample.id, snp.id, autosome.only,
+  grmRes <- runGRM(gdsobj, weights, sample.id, snp.id, autosome.only,
                 remove.monosnp, maf, missing.rate)
 
   grm <- grmRes[[1]]
@@ -86,6 +89,6 @@ seqPCA <- function(gdsobj, method, sample.id = NULL, snp.id = NULL,
   eigenRes <- eigen(grm)
   
   # Return the appropriate object
-  seqPCAClass(grm, method, maf, eigenRes, sampleId, snpId, eigen.cnt,
+  seqPCAClass(grm, weights, maf, eigenRes, sampleId, snpId, eigen.cnt,
               need.genmat)
 }

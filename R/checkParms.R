@@ -41,9 +41,9 @@ checkEcnt <- function(ecnt){
 
 
 # Check maf --------------------------------------------------------------------
-# Checks the maf paramter for either a single number in [0,0.5] or two values
-# in [0, 0.5] that are not equal with the first value strictly less than the
-# second value.
+# Checks the maf paramter for either NA or a string that has the form of an
+# interval with two numbers between 0 and 0.5 that are not equal and with the
+# first strictly less than the second
 
 checkMaf <- function(maf){
   if (!is.na(maf) & !is.character(maf) | is.nan(maf)){
@@ -135,17 +135,35 @@ checkSamp <- function(userSamp, dataSamp)
 # Check that the the snp.id vector is no longer than the number of SNP IDs in
 # the GDS file, has at least one entry, and does not contain SNP IDs not in the
 # GDS file.
-checkSnp <- function(userSnp, dataSnp)
-{
-  if (length(userSnp) > length(dataSnp)){
+checkSnp <- function(userSnp, dataSnp) {
+  if (length(userSnp) > length(dataSnp)) {
     stop("More SNP IDs given than are in the genotype data set.")
-  }else if (length(userSnp) <= 0){
+  } else if (length(userSnp) <= 0){
     stop("Snp.id vector specified has length of 0.")
-  }else if (any(!(userSnp %in% dataSnp)))
+  } else if (any(!(userSnp %in% dataSnp)))
   {
     stop("Snp.id vector specified has SNP IDs not in the data set.")
-  }else{
+  } else {
     return(TRUE)
   }
 
+}
+
+
+# Check weights ----------------------------------------------------------------
+checkWeights <- function(weights) {
+  if ( !(class(weights) %in% c("integer", "numeric")) ) {
+    stop("Weights should be a vector of two numbers.")
+  } else {
+    if(length(weights) != 2) {
+      stop("Weights should be a vector of length two.")
+    } else {
+      if(weights[1] > 0 & !is.nan(weights[1]) &
+           weights[2] > 0 & !is.nan(weights[2])){
+        return(TRUE)
+      } else {
+        stop("Weights should be positive numbers.")
+      }
+    }
+  }
 }

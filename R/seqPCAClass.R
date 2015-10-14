@@ -1,5 +1,5 @@
 # seqPCAClass ------------------------------------------------------------------
-seqPCAClass <- function(grm, method, maf, eigenRes, sampleId, snpId, eigenCnt,
+seqPCAClass <- function(grm, weights, maf, eigenRes, sampleId, snpId, eigenCnt,
                         needGenmat){
 
   # find the trace of the GRM
@@ -23,7 +23,7 @@ seqPCAClass <- function(grm, method, maf, eigenRes, sampleId, snpId, eigenCnt,
             dimensions of the GRM. All eigenvalues and vectors will be
             returned.")
     eigenCnt <- length(eigenRes$values)
-  } else if(eigenCnt == 0){
+  } else if(eigenCnt == 0) {
     eigenCnt <- length(eigenRes$values)
   }
 
@@ -38,7 +38,7 @@ seqPCAClass <- function(grm, method, maf, eigenRes, sampleId, snpId, eigenCnt,
   }
 
   # create the object of class snpgdsPCAClass
-  pcaRes <- list("method" = method,
+  pcaRes <- list("weights" = weights,
                  "maf" = maf,
                   "sample.id" = sampleId,
                   "snp.id" = snpId,
