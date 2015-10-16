@@ -33,12 +33,8 @@ runGRM <- function(gdsobj, weights, sampleId, snpId, autosomeOnly,
   # Determine the orientation of the file -- the code to calculate
   # the GRM is written for SNP x SAMPLE data, if the data is not
   # in that order, it is transposed as it is read in
-  if (identical(names(get.attr.gdsn(index.gdsn(genoDat, "genotype"))),
-                 "sample.order")) {
-    transpose <- TRUE
-  } else {
-    transpose <- FALSE
-  }
+  transpose <- identical(names(get.attr.gdsn(index.gdsn(genoDat, "genotype"))),
+                 "sample.order")) 
 
   # call the appropraite function based on the method
   grm <-  grmCalc(genoDat, weights, sampleId, snpId, autosomeOnly,
@@ -75,8 +71,8 @@ grmCalc <- function(genoDat, weights, sampleId, snpId, autosomeOnly,
   #totalSnps <- 0
 
   # Loop through the SNPs in blocks of size nblock
-  for(i in 1:max)
-  {
+  for(i in 1:max) {
+    
     message(paste("Computing GRM: Block", i, "of", max))
 
     # Get the SNPs to choose
