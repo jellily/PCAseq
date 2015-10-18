@@ -78,7 +78,7 @@ seqPCA <- function(gdsobj, weights = c(1, 1), sample.id = NULL, snp.id = NULL,
 
   grm <- grmRes[[1]]
   sampleId <- grmRes[[2]]
-  snpId <- grmRes[[3]] # fix this to actully return the list of SNPs use
+  snpId <- grmRes[[3]] 
   
   # Check if the GRM only has one entry
   if (dim(grm)[1] == 1 | dim(grm)[2] == 1 | class(grm) != "matrix"){

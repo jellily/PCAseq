@@ -3,7 +3,7 @@
 # runGRM -----------------------------------------------------------------------
 # Open the GDS file and check the orientation of the genotype data; call the
 # appropriate GRM method
-runGRM <- function(gdsobj, weights, sampleId, snpId, autosomeOnly, 
+runGRM <- function(gdsobj, weights, sampleId, snpId, autosomeOnly,
                    removeMonosnp, maf, missingRate) {
   # Open the file
   genoDat <- snpgdsOpen(gdsobj)
@@ -23,7 +23,7 @@ runGRM <- function(gdsobj, weights, sampleId, snpId, autosomeOnly,
   # if no SNP IDs are given, take all of them
   # (note SNP filtering happens at a later time point)
   snps <- read.gdsn(index.gdsn(genoDat, "snp.id"))
-  
+
   if (is.null(snpId)) {
     snpId <- snps
   } else {
@@ -34,7 +34,7 @@ runGRM <- function(gdsobj, weights, sampleId, snpId, autosomeOnly,
   # the GRM is written for SNP x SAMPLE data, if the data is not
   # in that order, it is transposed as it is read in
   transpose <- identical(names(get.attr.gdsn(index.gdsn(genoDat, "genotype"))),
-                 "sample.order")) 
+                 "sample.order"))
 
   # call the appropraite function based on the method
   grm <-  grmCalc(genoDat, weights, sampleId, snpId, autosomeOnly,
@@ -49,30 +49,30 @@ runGRM <- function(gdsobj, weights, sampleId, snpId, autosomeOnly,
 
 # grmCalc ---------------------------------------------------------------------
 # Calculate the GRM
-grmCalc <- function(genoDat, weights, sampleId, snpId, autosomeOnly, 
+grmCalc <- function(genoDat, weights, sampleId, snpId, autosomeOnly,
                     removeMonosnp, maf, missingRate, transpose){
 
   # constants
   nBlocks <- 5000
   byRows <- 1
   nCopies <- 2
-  
+
   nSubj <- length(sampleId)
   nSnps <- length(snpId)
-  
+
   alpha <- weights[1]
   beta <- weights[2]
-  
+
   emptyMat <- matrix(0, nrow = nSubj, ncol = nSubj)
   max <- ceiling(nSnps / nBlocks)  # maximum number of blocks to loop over
-  
+
   # create empty grm & vector to count the number of snps used
   grm <- matrix(0, nrow = nSubj, ncol = nSubj)
   #totalSnps <- 0
 
   # Loop through the SNPs in blocks of size nblock
   for(i in 1:max) {
-    
+
     message(paste("Computing GRM: Block", i, "of", max))
 
     # Get the SNPs to choose
@@ -88,11 +88,11 @@ grmCalc <- function(genoDat, weights, sampleId, snpId, autosomeOnly,
     }
 
     # Filter the data
-    snpInfo <- filterSnps(snps, snpDat, autosomeOnly, removeMonosnp, 
+    snpInfo <- filterSnps(snps, snpDat, autosomeOnly, removeMonosnp,
                           missingRate, maf, snpChrom)
     snps <- snpInfo[[1]]
     snpDat <- snpInfo[[2]]
-    
+
     # check to make sure there are still SNPs in the data set
     if ( !(identical(class(snpDat), "matrix")) | (dim(snpDat)[1] == 0) ) {
       message("No data remains in this block after filtering. Going to next
@@ -100,26 +100,24 @@ grmCalc <- function(genoDat, weights, sampleId, snpId, autosomeOnly,
      next
     } else {
       #totalSnps <- totalSnps + length(snps)
-      
+
       alleleFreq <- (1 / nCopies) * rowMeans(snpDat, na.rm = TRUE)
-      
+
       # Estimate the variance at each SNP
       genoCent <- sweep(snpDat, byRows, STATS = nCopies * alleleFreq)
       weights <- betaWeights(alleleFreq, alpha, beta)
 
       # Find the empirical correlation matrix
-      zee <- sweep(genoCent, byRows, STATS = weights, FUN = "/")
-      
+      zee <- sweep(genoCent, byRows, STATS = weights, FUN = "*")
+
       grm <- grm + crossprod(zee)
     }
   }
-  
+
   if (identical(grm, emptyMat)) {
     stop("GRM is the zero matrix. Perhaps all of the SNPs were removed when
          filtering or there is no variability in the genotype data.")
   } else {
-    
-    #grm <- (1 / totalSnps) * grm
     return(list(grm, snps))
   }
 }
@@ -128,7 +126,7 @@ grmCalc <- function(genoDat, weights, sampleId, snpId, autosomeOnly,
 # getIndex ---------------------------------------------------------------------
 # function to calculate the index for the current block of SNPs
 getIndex <- function(i, nBlock, nSnps){
-  
+
   index <- (1:nBlock) + (i - 1) * nBlock
 
   if (index[nBlock] > nSnps) {
@@ -142,9 +140,9 @@ getIndex <- function(i, nBlock, nSnps){
 # betaWeights ------------------------------------------------------------------
 # function to find the weights for each SNP by MAF
 betaWeights <- function(alleleFreq, alpha, beta) {
-  
+
   # find the minor allele frequency
   minorFreq <- calcMaf(alleleFreq)
-  
+
   return(sqrt(dbeta(minorFreq, alpha, beta)))
 }

@@ -48,9 +48,9 @@ filterMono <-function(snpDat){
   return(snps)
 }
 
+
 # filterAuto -------------------------------------------------------------------
 # Subset SNPs to only those on the autosomal chromosomes
-
 filterAuto <-function(snpChromosome){
 
   autosomeCodes <- as.character(1:22)
@@ -68,7 +68,6 @@ filterAuto <-function(snpChromosome){
 
 # filterMiss -------------------------------------------------------------------
 # Subset the SNPs to those with missingness rates less than missingRate
-
 filterMiss <-function(snpDat, missingRate){
 
   # replace the missing code 3 with NA
@@ -84,33 +83,33 @@ filterMiss <-function(snpDat, missingRate){
 # filterMaf --------------------------------------------------------------------
 # Subset the SNPs to those with MAFs either greater than maf (if a single value)
 # or in the range specified (if two values)
-
-filterMaf <-function(snpDat, maf){
+filterMaf <- function(snpDat, maf) {
 
   # find the allele frequencies
   alleleFreq <- 0.5*rowMeans(snpDat, na.rm = TRUE)
-  
-  mafMin <- mafBound(maf, 1)
-  mafMax <- mafBound(maf, 2)
-  
+  alleleMAFs <- calcMaf(alleleFreq)
+
+  mafMin <- getBound(maf, "min")
+  mafMax <- getBound(maf, "max")
+
   lowerBound <- substr(maf, 1, 1)
   upperBound <- substr(maf, nchar(maf), nchar(maf))
-  
+
   # subset based on the interval specified
   # four options ( ), ( ], [ ), and [ ]
-  if(lowerBound  == "(" & upperBound == ")"){
-    snps <- which((alleleFreq > mafMin & alleleFreq < mafMax) |
-                    (alleleFreq > (1 - mafMax) & alleleFreq < (1 - mafMin)))
-  } else if (lowerBound == "(" & upperBound == "]"){
-    snps <- which((alleleFreq > mafMin & alleleFreq <= mafMax) |
-                    (allelleFreq > (1 - mafMax) & alleleFreq <= (1 - mafMin)))
-  } else if (lowerBound == "[" & upperBound == ")"){
-    snps <- which((alleleFreq >= mafMin & alleleFreq < mafMax) |
-                    (alleleFreq >= (1 - mafMax) & alleleFreq < (1 - mafMin)))
+  if(lowerBound  == "(" & upperBound == ")") {
+    snps <- which(alleleMAFs > mafMin & alleleMAFs < mafMax)
+  } else if (lowerBound == "(" & upperBound == "]") {
+    snps <- which(alleleMAFs > mafMin & alleleMAFs <= mafMax)
+  } else if (lowerBound == "[" & upperBound == ")") {
+    snps <- which(alleleFreq >= mafMin & alleleFreq < mafMax)
+  } else if(lowerBound == "[" & upperBound == "]") {
+    snps <- which(alleleFreq >= mafMin & alleleFreq <= mafMax)
   } else {
-    snps <- which((alleleFreq >= mafMin & alleleFreq <= mafMax) |
-                    (alleleFreq >= (1 - mafMax) & alleleFreq <= (1 - mafMin)))
+    stop("There was an error with the MAF boundaries please check that they are 
+         properly specified.")
   }
+
   return(snps)
 }
 
@@ -122,10 +121,8 @@ calcMaf <- function(alleleFreq) {
   return(minorFreq)
 }
 
-
 # getMissRate ------------------------------------------------------------------
 # Get the missingness rate for the SNPs
-
 getMissRate <- function(snps){
   byRows <- 1
 
