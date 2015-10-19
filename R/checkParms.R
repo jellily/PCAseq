@@ -55,7 +55,7 @@ checkMaf <- function(maf) {
     lowerBound <- substr(maf, 1, 1)
     upperBound <- substr(maf, charLength, charLength)
     
-    if(lowerBound %in% c("(", "]") & upperBound %in% c(")", "]")) {
+    if(lowerBound %in% c("(", "[") & upperBound %in% c(")", "]")) {
       
       mafMin <- getBound(maf, "min")
       mafMax <- getBound(maf, "max")

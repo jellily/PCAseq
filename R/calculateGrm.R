@@ -34,7 +34,7 @@ runGRM <- function(gdsobj, weights, sampleId, snpId, autosomeOnly,
   # the GRM is written for SNP x SAMPLE data, if the data is not
   # in that order, it is transposed as it is read in
   transpose <- identical(names(get.attr.gdsn(index.gdsn(genoDat, "genotype"))),
-                 "sample.order"))
+                 "sample.order")
 
   # call the appropraite function based on the method
   grm <-  grmCalc(genoDat, weights, sampleId, snpId, autosomeOnly,
@@ -99,17 +99,15 @@ grmCalc <- function(genoDat, weights, sampleId, snpId, autosomeOnly,
                 block.")
      next
     } else {
-      #totalSnps <- totalSnps + length(snps)
-
       alleleFreq <- (1 / nCopies) * rowMeans(snpDat, na.rm = TRUE)
-
+      
       # Estimate the variance at each SNP
       genoCent <- sweep(snpDat, byRows, STATS = nCopies * alleleFreq)
+      
       weights <- betaWeights(alleleFreq, alpha, beta)
-
+      
       # Find the empirical correlation matrix
       zee <- sweep(genoCent, byRows, STATS = weights, FUN = "*")
-
       grm <- grm + crossprod(zee)
     }
   }
