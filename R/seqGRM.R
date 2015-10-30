@@ -1,5 +1,5 @@
 seqGRM <- function(gdsobj, weights, sample.id = NULL, snp.id = NULL,
-                   autosome.only = TRUE, remove.monosnp = TRUE, maf = NaN,
+                   autosome.only = TRUE, remove.monosnp = TRUE, maf = NA,
                    missing.rate = NaN, verbose = TRUE){
 
   # Check the inputs for the appropriate classes and values:

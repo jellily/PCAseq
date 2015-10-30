@@ -15,9 +15,8 @@
 #' @param autosome.only if TRUE, use autosomal SNPs only; if it is a numeric or
 #' character vector, keep SNPs according to the specified chromosomes.
 #' @param remove.monosnp if TURE, remove monomorphic SNPs.
-#' @param maf if one number is specified, use SNPs with MAF greater than or
-#' equal to this value; if a numeric vector of length two is specified, only
-#' SNPs with MAFs in (min, max) are taken.
+#' @param  a string of the form "<min, max>" where "<" may be "(" or "[" and
+#' ">" may be ")" or "]"; this indicates the minimum and maximum MAF to allow
 #' @param missing.rate to use the SNPs with missing rates less than or equal to
 #' missing.rate; if NaN, no misisng threshold.
 #' @param eigen.cnt the number of eigen vectors and values to return; if zero,
@@ -25,9 +24,10 @@
 #' @param need.genmat if TRUE, return the genetic relatedness matrix.
 #' @param verbose Not supported.
 #'
-#' @details If \code{method} is "eigen", the GRM is calculated using the
-#' EIGENSTRAT method as given in Patterson et al 2006. If \code{method} is
-#' "pcaseq", the GRM is calculated using the PCA-seq method.
+#' @details The weights parameter is a vector of two numbers, (a, b), that is 
+#' passed to a weighting function based on a Beta(a,b). This function uses the
+#' density of this Beta function at the SNP's minor allele frequency as the
+#' weight for the SNP.
 #'
 #' @section Note:
 #' If you need to run the EIGENSTRAT method on a very large data set and do not
@@ -53,7 +53,7 @@
 #' \item{\code{genmat}}{the genetic relateness matrix}}
 
 seqPCA <- function(gdsobj, weights = c(1, 1), sample.id = NULL, snp.id = NULL,
-                   autosome.only = TRUE, remove.monosnp = TRUE, maf = NaN,
+                   autosome.only = TRUE, remove.monosnp = TRUE, maf = NA,
                    missing.rate = NaN, eigen.cnt = 32, need.genmat = FALSE,
                    verbose = TRUE){
 
