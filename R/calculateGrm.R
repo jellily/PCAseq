@@ -142,5 +142,5 @@ betaWeights <- function(alleleFreq, alpha, beta) {
   # find the minor allele frequency
   minorFreq <- calcMaf(alleleFreq)
 
-  return(sqrt(dbeta(minorFreq, alpha, beta)))
+  return(dbeta(minorFreq, alpha, beta))
 }
