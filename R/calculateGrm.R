@@ -68,7 +68,6 @@ grmCalc <- function(genoDat, weights, sampleId, snpId, autosomeOnly,
 
   # create empty grm & vector to count the number of snps used
   grm <- matrix(0, nrow = nSubj, ncol = nSubj)
-  #totalSnps <- 0
 
   # Loop through the SNPs in blocks of size nblock
   for(i in 1:max) {
