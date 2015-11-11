@@ -5,7 +5,7 @@
 \alias{seqPCA}
 \title{Run PCA-seq on a GDS file}
 \usage{
-seqPCA(gdsobj, method, sample.id = NULL, snp.id = NULL,
+seqPCA(gdsobj, weights = c(1, 1), sample.id = NULL, snp.id = NULL,
   autosome.only = TRUE, remove.monosnp = TRUE, maf = NaN,
   missing.rate = NaN, eigen.cnt = 32, need.genmat = FALSE,
   verbose = TRUE)
@@ -13,8 +13,8 @@ seqPCA(gdsobj, method, sample.id = NULL, snp.id = NULL,
 \arguments{
 \item{gdsobj}{an object of the class SNPGDSFileClass, a SNP GDS file.}
 
-\item{method}{a string, either "eigen" or "pcaseq", indicating which method
-to use to calculate the GRM; see Details.}
+\item{weights}{a vector of two numbers, indicating the paraters to use
+for the beta function weights; see Details.}
 
 \item{sample.id}{a vector of sample ids specifying the samples to use for
 analysis; if NULL, all samples are used.}
@@ -44,7 +44,8 @@ return all eigenvalues and vectors.}
 \value{
 Return a \code{snpPCAClass} object, a list with the follow slots:
 \describe{
-\item{\code{method}}{the method used to calculate the GRM}
+\item{\code{weights}}{the parameters used to define the weights
+ used to calculate the GRM}
 \item{\code{maf}}{the MAF cutoffs used}
 \item{\code{sample.id}}{the sample ids used in the analysis}
 \item{\code{snp.id}}{the SNP ids used in the analysis}

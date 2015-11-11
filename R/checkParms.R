@@ -41,43 +41,60 @@ checkEcnt <- function(ecnt){
 
 
 # Check maf --------------------------------------------------------------------
-# Checks the maf paramter for either a single number in [0,0.5] or two values
-# in [0, 0.5] that are not equal with the first value strictly less than the
-# second value.
+# Checks the maf paramter for either NA or a string that has the form of an
+# interval with two numbers between 0 and 0.5 that are not equal and with the
+# first strictly less than the second
 
-checkMaf <- function(maf){
-  if (!is.na(maf) & !is.character(maf) | is.nan(maf)){
+# checkMaf -- checks rare and common for the appropriate format
+checkMaf <- function(maf) {
+  if ((!is.na(maf) & !is.character(maf)) | is.nan(maf)) {
     stop("MAF should be NA or a character. See help(seqPCA) for more details.")
-  } else  if(is.character(maf)){
-    mafMin <- as.numeric(mafBound(maf, 1))
-    mafMax <- as.numeric(mafBound(maf, 2))
+  } else  if (is.character(maf)) {
+    charLength <- nchar(maf)
     
-    if(mafMin < 0 | mafMax > 0.5 | mafMin >= mafMax)
-    {
-      stop("MAF bounds should be between 0 and 0.5 and given in min, max order.")
+    lowerBound <- substr(maf, 1, 1)
+    upperBound <- substr(maf, charLength, charLength)
+    
+    if(lowerBound %in% c("(", "[") & upperBound %in% c(")", "]")) {
+      
+      mafMin <- getBound(maf, "min")
+      mafMax <- getBound(maf, "max")
+      
+      if (mafMin < 0 | mafMax > 0.5 | mafMin >= mafMax) 
+      {
+        stop("MAF bounds should be between 0 and 0.5 and given in min, max order.")
+      } else 
+      {
+        return(TRUE)
+      }
+      
     } else {
-      return(TRUE)
-    } 
-  } else if(is.na(maf)){
+      stop("MAF interval boundaries are defined by parentheses or square 
+           brackets only.")
+    }
+  } else if(is.na(maf)) {
     return(TRUE)
   }
 }
 
 
-# function to get the MAF endpoints and check for consistency
-mafBound <- function(maf, num){
-  mafs <- unlist(strsplit(maf, split = ","))
-  mafVal <- mafs[num]
+
+
+# extract the numeric MAF bounds
+getBound <- function(maf, fun) {
+  maf <- unlist(strsplit(maf, ","))
+  maf <- gsub("[", "", maf, fixed = TRUE)
+  maf <- gsub("]", "", maf, fixed = TRUE)
+  maf <- gsub("(", "", maf, fixed = TRUE)
+  maf <- gsub(")", "", maf, fixed = TRUE)
   
-  mafVal <- gsub("[", "", mafVal, fixed = TRUE)
-  mafVal <- gsub("]", "", mafVal, fixed = TRUE)
-  mafVal <- gsub("(", "", mafVal, fixed = TRUE)
-  mafVal <- gsub(")", "", mafVal, fixed = TRUE)
+  maf <- as.numeric(maf)
   
-  mafVal <- as.numeric(mafVal)
-  
-  return(mafVal)
+  bound <- do.call(fun, args = list(maf))
+  return(bound)
 }
+
+
 
 
 # Check missing.rate -----------------------------------------------------------
@@ -135,17 +152,35 @@ checkSamp <- function(userSamp, dataSamp)
 # Check that the the snp.id vector is no longer than the number of SNP IDs in
 # the GDS file, has at least one entry, and does not contain SNP IDs not in the
 # GDS file.
-checkSnp <- function(userSnp, dataSnp)
-{
-  if (length(userSnp) > length(dataSnp)){
+checkSnp <- function(userSnp, dataSnp) {
+  if (length(userSnp) > length(dataSnp)) {
     stop("More SNP IDs given than are in the genotype data set.")
-  }else if (length(userSnp) <= 0){
+  } else if (length(userSnp) <= 0){
     stop("Snp.id vector specified has length of 0.")
-  }else if (any(!(userSnp %in% dataSnp)))
+  } else if (any(!(userSnp %in% dataSnp)))
   {
     stop("Snp.id vector specified has SNP IDs not in the data set.")
-  }else{
+  } else {
     return(TRUE)
   }
 
+}
+
+
+# Check weights ----------------------------------------------------------------
+checkWeights <- function(weights) {
+  if ( !(class(weights) %in% c("integer", "numeric")) ) {
+    stop("Weights should be a vector of two numbers.")
+  } else {
+    if(length(weights) != 2) {
+      stop("Weights should be a vector of length two.")
+    } else {
+      if(weights[1] > 0 & !is.nan(weights[1]) &
+           weights[2] > 0 & !is.nan(weights[2])){
+        return(TRUE)
+      } else {
+        stop("Weights should be positive numbers.")
+      }
+    }
+  }
 }

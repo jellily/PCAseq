@@ -6,8 +6,8 @@
 #' @aliases seqGRM
 #'
 #' @param gdsobj an object of the class SNPGDSFileClass, a SNP GDS file.
-#' @param method a string, either "eigen" or "pcaseq", indicating which method
-#' to use to calculate the GRM; see Details.
+#' @param weights a vector of two numbers, indicating the paraters to use 
+#' for the beta function weights; see Details.
 #' @param sample.id a vector of sample ids specifying the samples to use for
 #' analysis; if NULL, all samples are used.
 #' @param snp.id a vector of SNP ids specifying the SNPs to use for analysis;
@@ -15,9 +15,8 @@
 #' @param autosome.only if TRUE, use autosomal SNPs only; if it is a numeric or
 #' character vector, keep SNPs according to the specified chromosomes.
 #' @param remove.monosnp if TURE, remove monomorphic SNPs.
-#' @param maf if one number is specified, use SNPs with MAF greater than or
-#' equal to this value; if a numeric vector of length two is specified, only
-#' SNPs with MAFs in (min, max) are taken.
+#' @param  a string of the form "<min, max>" where "<" may be "(" or "[" and
+#' ">" may be ")" or "]"; this indicates the minimum and maximum MAF to allow
 #' @param missing.rate to use the SNPs with missing rates less than or equal to
 #' missing.rate; if NaN, no misisng threshold.
 #' @param eigen.cnt the number of eigen vectors and values to return; if zero,
@@ -25,9 +24,10 @@
 #' @param need.genmat if TRUE, return the genetic relatedness matrix.
 #' @param verbose Not supported.
 #'
-#' @details If \code{method} is "eigen", the GRM is calculated using the
-#' EIGENSTRAT method as given in Patterson et al 2006. If \code{method} is
-#' "pcaseq", the GRM is calculated using the PCA-seq method.
+#' @details The weights parameter is a vector of two numbers, (a, b), that is 
+#' passed to a weighting function based on a Beta(a,b). This function uses the
+#' density of this Beta function at the SNP's minor allele frequency as the
+#' weight for the SNP.
 #'
 #' @section Note:
 #' If you need to run the EIGENSTRAT method on a very large data set and do not
@@ -37,7 +37,8 @@
 #'
 #' @return Return a \code{snpPCAClass} object, a list with the follow slots:
 #' \describe{
-#' \item{\code{method}}{the method used to calculate the GRM}
+#' \item{\code{weights}}{the parameters used to define the weights
+#'  used to calculate the GRM}
 #' \item{\code{maf}}{the MAF cutoffs used}
 #' \item{\code{sample.id}}{the sample ids used in the analysis}
 #' \item{\code{snp.id}}{the SNP ids used in the analysis}
@@ -51,12 +52,14 @@
 #' currently supported}
 #' \item{\code{genmat}}{the genetic relateness matrix}}
 
-seqPCA <- function(gdsobj, method, sample.id = NULL, snp.id = NULL,
-                   autosome.only = TRUE, remove.monosnp = TRUE, maf = NaN,
+seqPCA <- function(gdsobj, weights = c(1, 1), sample.id = NULL, snp.id = NULL,
+                   autosome.only = TRUE, remove.monosnp = TRUE, maf = NA,
                    missing.rate = NaN, eigen.cnt = 32, need.genmat = FALSE,
                    verbose = TRUE){
 
   # Check the inputs for the appropriate classes and values
+  checkWeights(weights)
+  
   checkBool(autosome.only)
   checkBool(remove.monosnp)
   checkBool(need.genmat)
@@ -70,12 +73,12 @@ seqPCA <- function(gdsobj, method, sample.id = NULL, snp.id = NULL,
 
 
   # Find the GRM
-  grmRes <- runGRM(gdsobj, method, sample.id, snp.id, autosome.only,
+  grmRes <- runGRM(gdsobj, weights, sample.id, snp.id, autosome.only,
                 remove.monosnp, maf, missing.rate)
 
   grm <- grmRes[[1]]
   sampleId <- grmRes[[2]]
-  snpId <- grmRes[[3]] # fix this to actully return the list of SNPs use
+  snpId <- grmRes[[3]] 
   
   # Check if the GRM only has one entry
   if (dim(grm)[1] == 1 | dim(grm)[2] == 1 | class(grm) != "matrix"){
@@ -86,6 +89,6 @@ seqPCA <- function(gdsobj, method, sample.id = NULL, snp.id = NULL,
   eigenRes <- eigen(grm)
   
   # Return the appropriate object
-  seqPCAClass(grm, method, maf, eigenRes, sampleId, snpId, eigen.cnt,
+  seqPCAClass(grm, weights, maf, eigenRes, sampleId, snpId, eigen.cnt,
               need.genmat)
 }

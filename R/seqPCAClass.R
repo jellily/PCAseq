@@ -1,5 +1,5 @@
 # seqPCAClass ------------------------------------------------------------------
-seqPCAClass <- function(grm, method, maf, eigenRes, sampleId, snpId, eigenCnt,
+seqPCAClass <- function(grm, weights, maf, eigenRes, sampleId, snpId, eigenCnt,
                         needGenmat){
 
   # find the trace of the GRM
@@ -12,22 +12,22 @@ seqPCAClass <- function(grm, method, maf, eigenRes, sampleId, snpId, eigenCnt,
 
   # if needGenmat is FALSE,
   # set genmat to NULL
-  if (!needGenmat){
+  if (!needGenmat) {
     grm <- NULL
   }
 
   # if eigen.cnt is greater than the total number
   # use the total number & issue a warning
-  if (eigenCnt > length(eigenRes$values)){
+  if (eigenCnt > length(eigenRes$values)) {
     warning("Number of eigenvectors and values to return is more than the
             dimensions of the GRM. All eigenvalues and vectors will be
             returned.")
     eigenCnt <- length(eigenRes$values)
-  } else if(eigenCnt == 0){
+  } else if(eigenCnt == 0) {
     eigenCnt <- length(eigenRes$values)
   }
 
-  if (is.null(eigenRes)){
+  if (is.null(eigenRes)) {
     eigenval <- NULL
     eigenvect <- NULL
     varprop <- NULL
@@ -38,16 +38,16 @@ seqPCAClass <- function(grm, method, maf, eigenRes, sampleId, snpId, eigenCnt,
   }
 
   # create the object of class snpgdsPCAClass
-  pcaRes <- list("method" = method,
+  pcaRes <- list("weights" = weights,
                  "maf" = maf,
-                  "sample.id" = sampleId,
-                  "snp.id" = snpId,
-                  "eigenval" = eigenval,
-                  "eigenvect" = eigenvect,
-                  "varprop" = varprop,
-                  "TraceXTX" = matTrace,
-                  "Bayesian" = FALSE,
-                  "genmat" = grm)
+                 "sample.id" = sampleId,
+                 "snp.id" = snpId,
+                 "eigenval" = eigenval,
+                 "eigenvect" = eigenvect,
+                 "varprop" = varprop,
+                 "TraceXTX" = matTrace,
+                 "Bayesian" = FALSE,
+                 "genmat" = grm)
   class(pcaRes) <- list("seqPCAClass", "snpgdsPCAClass")
 
   return(pcaRes)
