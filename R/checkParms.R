@@ -48,7 +48,9 @@ checkEcnt <- function(ecnt){
 checkMaf <- function(maf){
   if (!is.na(maf) & !is.character(maf) | is.nan(maf)){
     stop("MAF should be NA or a character. See help(seqPCA) for more details.")
-  } else  if(is.character(maf)){
+  } else  if(is.na(maf)){
+    return(TRUE)
+  } else if(class(maf) == "character" & !is.na(maf)){
     mafMin <- as.numeric(mafBound(maf, 1))
     mafMax <- as.numeric(mafBound(maf, 2))
     
@@ -58,8 +60,6 @@ checkMaf <- function(maf){
     } else {
       return(TRUE)
     } 
-  } else if(is.na(maf)){
-    return(TRUE)
   }
 }
 
