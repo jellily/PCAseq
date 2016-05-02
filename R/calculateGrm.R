@@ -43,7 +43,7 @@ runGRM <- function(gdsobj, weights, sampleId, snpId, autosomeOnly,
   # Close the file
   snpgdsClose(genoDat)
 
-  return(list(grm[[1]], samples, snpId[[2]]))
+  return(list(grm[[1]], sampleId, snpId[[2]]))
 }
 
 
