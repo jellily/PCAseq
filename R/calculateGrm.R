@@ -89,12 +89,16 @@ grmCalc <- function(genoDat, weights, sampleId, snpId, autosomeOnly,
     }
     
     # Read in the relevant SNP data, subsetting by subject
-    snpDat <- read.gdsn(index.gdsn(genoDat, "genotype"), start=c(first,1), count = c(cake,-1)) 
-    snpChrom <- read.gdsn(index.gdsn(genoDat, "snp.chromosome"), start = first, count = cake)
+    
     
     # Transpose data into SNPs x Samples
     if ( isTRUE(transpose) ) {
+      snpDat <- read.gdsn(index.gdsn(genoDat, "genotype"), start = c(1, first), count = c(-1, cake)) 
+      snpChrom <- read.gdsn(index.gdsn(genoDat, "snp.chromosome"), start = first, count = cake)
       snpDat <- t(snpDat)
+    } else {
+      snpDat <- read.gdsn(index.gdsn(genoDat, "genotype"), start = c(first,1), count = c(cake,-1)) 
+      snpChrom <- read.gdsn(index.gdsn(genoDat, "snp.chromosome"), start = first, count = cake)
     }
     
     # Filter the data
