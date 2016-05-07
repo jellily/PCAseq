@@ -82,17 +82,15 @@ grmCalc <- function(genoDat, weights, sampleId, snpId, autosomeOnly,
     
     # Get the SNPs to choose
     first <- 1 + (i - 1) * nBlocks
-    count <- nBlocks
+    cake <- nBlocks
     
     if((nBlocks + first - 1) > nSnps){
-      count <- nSnps - first + 1  
+      cake <- nSnps - first + 1  
     }
     
-    print(count)
-    
     # Read in the relevant SNP data, subsetting by subject
-    snpDat <- read.gdsn(index.gdsn(genoDat, "genotype"), start=c(first,1), count = c(count,-1)) 
-    snpChrom <- read.gdsn(index.gdsn(genoDat, "snp.chromosome"), start = first, count = count)
+    snpDat <- read.gdsn(index.gdsn(genoDat, "genotype"), start=c(first,1), count = c(cake,-1)) 
+    snpChrom <- read.gdsn(index.gdsn(genoDat, "snp.chromosome"), start = first, count = cake)
     
     # Transpose data into SNPs x Samples
     if ( isTRUE(transpose) ) {
