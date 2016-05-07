@@ -1,37 +1,32 @@
 # filterSnps -------------------------------------------------------------------
 # Subset the genotype data set by removing SNPs based on parameters passed in
 filterSnps <- function(snps, snpDat, autosomeOnly, removeMonosnp, missingRate,
-                       maf, snpChromosome){
-
+                       maf, snpChromosome){  
   # remove sex chromosome snps
   if (autosomeOnly) {
-    index <- filterAuto(snpChromosome)
-    snps <- snps[index]
-    snpDat <- snpDat[index, ]
+    temp <- filterAuto(snpChromosome)
+    snps <- snps %in% temp
   }
-
+  
   # remove monomorphic snps
   if (removeMonosnp) {
-    index <- filterMono(snpDat)
-    snps <- snps[index]
-    snpDat <- snpDat[index, ]
+    temp <- filterMono(snpDat)
+    snps <- snps %in% temp
   }
-
+  
   # remove snps with too much missingness
   if (!is.nan(missingRate)) {
-    index <- filterMiss(snpDat, missingRate)
-    snps <- snps[index]
-    snpDat <- snpDat[index, ]
+    temp <- filterMiss(snpDat, missingRate)
+    snps <- snps %in% temp
   }
-
+  
   # filter based on MAF
   if (!is.na(maf)) {
-    index <- filterMaf(snpDat, maf)
-    snps <- snps[index]
-    snpDat <- snpDat[index, ]
+    temp <- filterMaf(snpDat, maf)
+    snps <- snps %in% temp
   }
-
-  return(list(snps, snpDat))
+  
+  return(snps)
 }
 
 
@@ -116,9 +111,7 @@ filterMaf <- function(snpDat, maf) {
 # calcMAF ----------------------------------------------------------------------
 # calculate the minor allele frequency
 calcMaf <- function(alleleFreq) {
-  freqs <- cbind(alleleFreq, 1 - alleleFreq)
-  minorFreq <- apply(freqs, 1, FUN = min)
-  return(minorFreq)
+  return(pmin(alleleFreq, 1-alleleFreq))
 }
 
 # getMissRate ------------------------------------------------------------------
