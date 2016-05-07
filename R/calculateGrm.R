@@ -88,6 +88,7 @@ grmCalc <- function(genoDat, weights, sampleId, snpId, autosomeOnly,
       count <- nSnps - first + 1  
     }
     
+    print(count)
     
     # Read in the relevant SNP data, subsetting by subject
     snpDat <- read.gdsn(index.gdsn(genoDat, "genotype"), start=c(first,1), count = c(count,-1)) 
