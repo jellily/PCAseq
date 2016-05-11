@@ -114,6 +114,7 @@ grmCalc <- function(genoDat, weights, sampleId, snpId, autosomeOnly,
     
     # check to make sure there are still SNPs in the data set
     if ( !(identical(class(snpDat), "matrix")) | (dim(snpDat)[1] == 0) ) {
+      grm[[i]] <- emptyMat
       message("No data remains in this block after filtering. Going to next
               block.")
       next
