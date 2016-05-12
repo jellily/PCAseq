@@ -128,6 +128,8 @@ grmCalc <- function(genoDat, weights, sampleId, snpId, autosomeOnly,
       # Find the empirical correlation matrix
       zee <- sweep(genoCent, byRows, STATS = weights, FUN = "*", check.margin = FALSE)
       grm[[i]] <- crossprod(zee)
+      print(zee[1:5])
+      print(crossprod(zee)[1:5, 1:5])
     }
   }
   
