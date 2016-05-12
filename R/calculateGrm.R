@@ -66,7 +66,7 @@ grmCalc <- function(genoDat, weights, sampleId, snpId, autosomeOnly,
   max <- ceiling(nSnps / nBlocks)  # maximum number of blocks to loop over
   
   # create empty grm & vector to count the number of snps used
-  grm <- vector("list", max)
+  grm <- rep(list(emptyMat), max)
   
   
   # get the index of the subjects
@@ -114,7 +114,6 @@ grmCalc <- function(genoDat, weights, sampleId, snpId, autosomeOnly,
     
     # check to make sure there are still SNPs in the data set
     if ( !(identical(class(snpDat), "matrix")) | (dim(snpDat)[1] == 0) ) {
-      grm[[i]] <- emptyMat
       message("No data remains in this block after filtering. Going to next
               block.")
       next
@@ -132,7 +131,7 @@ grmCalc <- function(genoDat, weights, sampleId, snpId, autosomeOnly,
     }
   }
   
-  if (identical(grm, vector("list", max))) {
+  if (identical(grm, rep(list(emptyMat), max)) {
     stop("GRM is the zero matrix. Perhaps all of the SNPs were removed when
          filtering or there is no variability in the genotype data.")
   } else {
