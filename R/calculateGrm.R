@@ -131,7 +131,7 @@ grmCalc <- function(genoDat, weights, sampleId, snpId, autosomeOnly,
     }
   }
   
-  if (identical(grm, rep(list(emptyMat), max)) {
+  if (identical(grm, rep(list(emptyMat), max))) {
     stop("GRM is the zero matrix. Perhaps all of the SNPs were removed when
          filtering or there is no variability in the genotype data.")
   } else {
