@@ -81,7 +81,7 @@ seqPCA <- function(gdsobj, weights = c(1, 1), sample.id = NULL, snp.id = NULL,
   snpId <- grmRes[[3]] 
   
   print(dim(grm))
-  summary(grm)
+  print(grm[1:5, 1:5])
   
   # Check if the GRM only has one entry
   if (dim(grm)[1] == 1 | dim(grm)[2] == 1 | class(grm) != "matrix"){
