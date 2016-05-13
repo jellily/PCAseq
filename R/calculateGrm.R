@@ -129,6 +129,9 @@ grmCalc <- function(genoDat, weights, sampleId, snpId, autosomeOnly,
       zee <- sweep(genoCent, byRows, STATS = weights, FUN = "*", check.margin = FALSE)
       grm[[i]] <- crossprod(zee)
       print(zee[1:5])
+      print(alleleFreq[1:5])
+      print(genoCent[1:5, 1:5])
+      print(weights[1:5])
       print(crossprod(zee)[1:5, 1:5])
     }
   }
