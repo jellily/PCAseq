@@ -114,8 +114,10 @@ grmCalc <- function(genoDat, weights, sampleId, snpId, autosomeOnly,
     snpIndex <- filterSnps(toFilter, snpDat, autosomeOnly, removeMonosnp,
                            missingRate, maf, snpChrom)
     print(dim(snpDat))
+    print(length(snpIndex))
+    print(snpIndex[1])
+    print(snpIndex[length(snpIndex)])
     snpDat <- snpDat[snpIndex, ] # subset by SNP ID
-    
     print(dim(snpDat))
     
     # check to make sure there are still SNPs in the data set
