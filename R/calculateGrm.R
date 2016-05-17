@@ -5,6 +5,7 @@
 # appropriate GRM method
 runGRM <- function(gdsobj, weights, sampleId, snpId, autosomeOnly,
                    removeMonosnp, maf, missingRate) {
+  print(removeMonosnp)
   # Open the file
   genoDat <- snpgdsOpen(gdsobj)
 
@@ -50,7 +51,8 @@ runGRM <- function(gdsobj, weights, sampleId, snpId, autosomeOnly,
 # grmCalc ---------------------------------------------------------------------
 # Calculate the GRM
 grmCalc <- function(genoDat, weights, sampleId, snpId, autosomeOnly,
-                    removeMonosnp, maf, missingRate, transpose){  
+                    removeMonosnp, maf, missingRate, transpose){ 
+  print(removeMonosnp)
   # constants
   nBlocks <- 5000
   byRows <- 1
