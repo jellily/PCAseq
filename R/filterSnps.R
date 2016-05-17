@@ -2,7 +2,6 @@
 # Subset the genotype data set by removing SNPs based on parameters passed in
 filterSnps <- function(snps, snpDat, autosomeOnly, removeMonosnp, missingRate,
                        maf, snpChromosome){  
-  print(removeMonosnp)
   # remove sex chromosome snps
   if (autosomeOnly) {
     temp <- filterAuto(snpChromosome)
@@ -11,7 +10,6 @@ filterSnps <- function(snps, snpDat, autosomeOnly, removeMonosnp, missingRate,
   
   # remove monomorphic snps
   if (removeMonosnp) {
-    print("cake!")
     temp <- filterMono(snpDat)
     snps <- snps %in% temp
   }

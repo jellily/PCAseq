@@ -5,7 +5,6 @@
 # appropriate GRM method
 runGRM <- function(gdsobj, weights, sampleId, snpId, autosomeOnly,
                    removeMonosnp, maf, missingRate) {
-  print(removeMonosnp)
   # Open the file
   genoDat <- snpgdsOpen(gdsobj)
 
@@ -52,7 +51,6 @@ runGRM <- function(gdsobj, weights, sampleId, snpId, autosomeOnly,
 # Calculate the GRM
 grmCalc <- function(genoDat, weights, sampleId, snpId, autosomeOnly,
                     removeMonosnp, maf, missingRate, transpose){ 
-  print(removeMonosnp)
   # constants
   nBlocks <- 5000
   byRows <- 1
@@ -115,8 +113,10 @@ grmCalc <- function(genoDat, weights, sampleId, snpId, autosomeOnly,
                            missingRate, maf, snpChrom)
     print(dim(snpDat))
     print(length(snpIndex))
+    
     print(snpIndex[1])
     print(snpIndex[length(snpIndex)])
+    
     snpDat <- snpDat[snpIndex, ] # subset by SNP ID
     print(dim(snpDat))
     
@@ -138,9 +138,6 @@ grmCalc <- function(genoDat, weights, sampleId, snpId, autosomeOnly,
       grm[[i]] <- crossprod(zee)
       print(zee[1:5])
       print(alleleFreq[1:5])
-      print(genoCent[1:5, 1:5])
-      print(weights[1:5])
-      print(crossprod(zee)[1:5, 1:5])
     }
   }
   
