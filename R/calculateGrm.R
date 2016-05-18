@@ -118,7 +118,7 @@ grmCalc <- function(genoDat, weights, sampleId, snpId, autosomeOnly,
     print(paste("Last SnpIndex:", snpIndex[length(snpIndex)]))
     
     snpDat <- snpDat[snpIndex, ] # subset by SNP ID
-    print(paste("Dim of snpDat:", dim(snpDat))
+    print(paste("Dim of snpDat:", dim(snpDat)))
     
     # check to make sure there are still SNPs in the data set
     if ( !(identical(class(snpDat), "matrix")) | (dim(snpDat)[1] == 0) ) {
