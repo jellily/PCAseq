@@ -74,8 +74,8 @@ grmCalc <- function(genoDat, weights, sampleId, snpId, autosomeOnly,
   subj <- which(subj %in% sampleId)
   snps <- read.gdsn(index.gdsn(genoDat, "snp.id"))
   snps <- snps %in% snpId
-  print(length(snps))
-  print(length(snpId))
+  print(paste("Length of Snps:", length(snps))
+  print(paste("Length of snpId:", length(snpId))
   
   # Loop through the SNPs in blocks of size nblock
   for(i in 1:max) {
@@ -111,14 +111,14 @@ grmCalc <- function(genoDat, weights, sampleId, snpId, autosomeOnly,
     toFilter <- (1:count)[snps[first:(first+count-1)]]
     snpIndex <- filterSnps(toFilter, snpDat, autosomeOnly, removeMonosnp,
                            missingRate, maf, snpChrom)
-    print(dim(snpDat))
-    print(length(snpIndex))
+    print(paste("Dim of snpDat:", dim(snpDat))
+    print(paste("Length of snpIndex:", length(snpIndex))
     
-    print(snpIndex[1])
-    print(snpIndex[length(snpIndex)])
+    print(paste("First SnpIndex:", snpIndex[1]))
+    print(paste("Last SnpIndex:", snpIndex[length(snpIndex)]))
     
     snpDat <- snpDat[snpIndex, ] # subset by SNP ID
-    print(dim(snpDat))
+    print(paste("Dim of snpDat:", dim(snpDat))
     
     # check to make sure there are still SNPs in the data set
     if ( !(identical(class(snpDat), "matrix")) | (dim(snpDat)[1] == 0) ) {

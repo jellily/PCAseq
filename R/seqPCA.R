@@ -71,8 +71,6 @@ seqPCA <- function(gdsobj, weights = c(1, 1), sample.id = NULL, snp.id = NULL,
 
   checkMiss(missing.rate)
 
-  print(remove.monosnp)
-
   # Find the GRM
   grmRes <- runGRM(gdsobj, weights, sample.id, snp.id, autosome.only,
                 remove.monosnp, maf, missing.rate)
