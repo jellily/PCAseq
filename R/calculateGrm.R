@@ -39,11 +39,11 @@ runGRM <- function(gdsobj, weights, sampleId, snpId, autosomeOnly,
   # call the appropraite function based on the method
   grm <-  grmCalc(genoDat, weights, sampleId, snpId, autosomeOnly,
                                  removeMonosnp, maf, missingRate, transpose)
-
+  
   # Close the file
   snpgdsClose(genoDat)
 
-  return(list(grm[[1]], sampleId, snpId[[2]]))
+  return(list(grm[[1]], sampleId, grm[[2]]))
 }
 
 
@@ -57,30 +57,28 @@ grmCalc <- function(genoDat, weights, sampleId, snpId, autosomeOnly,
   nCopies <- 2
   
   nSubj <- length(sampleId)
-  nSnps <- length(snpId)
   
   alpha <- weights[1]
   beta <- weights[2]
   
   emptyMat <- matrix(0, nrow = nSubj, ncol = nSubj)
-  max <- ceiling(nSnps / nBlocks)  # maximum number of blocks to loop over
-  
-  # create empty grm & vector to count the number of snps used
-  grm <- rep(list(emptyMat), max)
-  
   
   # get the index of the subjects
   subj <- read.gdsn(index.gdsn(genoDat, "sample.id"))
   subj <- which(subj %in% sampleId)
-  snps <- read.gdsn(index.gdsn(genoDat, "snp.id"))
-  snps <- snps %in% snpId
-  print(paste("Length of Snps:", length(snps)))
-  print(paste("Length of snpId:", length(snpId)))
+  snps <- read.gdsn(index.gdsn(genoDat, "snp.id")) # the letter SNP codes
+  
+  keepSnps <- c()
+  
+  maxBlocks <- ceiling(length(snps) / nBlocks)  # maximum number of blocks to loop over
+  
+  # create empty grm & vector to count the number of snps used
+  grm <- rep(list(emptyMat), maxBlocks)
   
   # Loop through the SNPs in blocks of size nblock
-  for(i in 1:max) {
+  for(i in 1:maxBlocks) {
     
-    message(paste("Computing GRM: Block", i, "of", max))
+    message(paste("Computing GRM: Block", i, "of", maxBlocks))
     
     # Get the SNPs to choose
     first <- 1 + (i - 1) * nBlocks
@@ -90,35 +88,30 @@ grmCalc <- function(genoDat, weights, sampleId, snpId, autosomeOnly,
       count <- nSnps - first + 1  
     }
     
-    # Read in the relevant SNP data, subsetting by subject
-    
     
     # Transpose data into SNPs x Samples
     if ( isTRUE(transpose) ) {
       snpDat <- read.gdsn(index.gdsn(genoDat, "genotype"), start = c(1, first), count = c(-1, count)) 
-      snpChrom <- read.gdsn(index.gdsn(genoDat, "snp.chromosome"), start = first, count = count)
       snpDat <- t(snpDat)
     } else {
       snpDat <- read.gdsn(index.gdsn(genoDat, "genotype"), start = c(first,1), count = c(count,-1)) 
-      snpChrom <- read.gdsn(index.gdsn(genoDat, "snp.chromosome"), start = first, count = count)
     }
+    
+    # Read in the chromosome ids: might be faster to move this into the autosome only function,
+    # so that it's only done when it needs to be done...
+    snpChrom <- read.gdsn(index.gdsn(genoDat, "snp.chromosome"), start = first, count = count)
     
     # Filter the data
     # by subject
-    snpDat <- snpDat[ ,subj] # subset by subject ID
+    snpDat <- snpDat[ , subj] # subset by subject ID
 
     # by SNP
-    toFilter <- (1:count)[snps[first:(first+count-1)]]
-    snpIndex <- filterSnps(toFilter, snpDat, autosomeOnly, removeMonosnp,
+    snpIndex <- filterSnps(snpDat, autosomeOnly, removeMonosnp,
                            missingRate, maf, snpChrom)
-    print(paste("Dim of snpDat:", dim(snpDat)))
-    print(paste("Length of snpIndex:", length(snpIndex)))
-    
-    print(paste("First SnpIndex:", snpIndex[1]))
-    print(paste("Last SnpIndex:", snpIndex[length(snpIndex)]))
-    
+    snpIndex <- snpIndex & snps[first:(first + count - 1)] %in% snpId
     snpDat <- snpDat[snpIndex, ] # subset by SNP ID
-    print(paste("Dim of snpDat:", dim(snpDat)))
+    
+    keepSnps <- c(keepSnps, snps[which(snpIndex) + (i-1) * nBlocks])
     
     # check to make sure there are still SNPs in the data set
     if ( !(identical(class(snpDat), "matrix")) | (dim(snpDat)[1] == 0) ) {
@@ -136,16 +129,14 @@ grmCalc <- function(genoDat, weights, sampleId, snpId, autosomeOnly,
       # Find the empirical correlation matrix
       zee <- sweep(genoCent, byRows, STATS = weights, FUN = "*", check.margin = FALSE)
       grm[[i]] <- crossprod(zee)
-      print(zee[1:5])
-      print(alleleFreq[1:5])
     }
   }
   
-  if (identical(grm, rep(list(emptyMat), max))) {
+  if (identical(grm, rep(list(emptyMat), maxBlocks))) {
     stop("GRM is the zero matrix. Perhaps all of the SNPs were removed when
          filtering or there is no variability in the genotype data.")
   } else {
-    return(list(Reduce("+", grm)))
+    return(list(Reduce("+", grm), keepSnps))
   }
 }
 

@@ -1,32 +1,35 @@
 # filterSnps -------------------------------------------------------------------
 # Subset the genotype data set by removing SNPs based on parameters passed in
-filterSnps <- function(snps, snpDat, autosomeOnly, removeMonosnp, missingRate,
-                       maf, snpChromosome){  
+filterSnps <- function(snpDat, autosomeOnly, removeMonosnp, missingRate,
+                       maf, snpChromosome){ 
+  
+  # set up empty vectors
+  aoCheck <- rep(TRUE, nrow(snpDat))
+  msCheck <- rep(TRUE, nrow(snpDat))
+  mrCheck <- rep(TRUE, nrow(snpDat))
+  maCheck <- rep(TRUE, nrow(snpDat))
+  
   # remove sex chromosome snps
   if (autosomeOnly) {
-    temp <- filterAuto(snpChromosome)
-    snps <- snps %in% temp
+    aoCheck <- 1:length(snpChromosome) %in% filterAuto(snpChromosome) 
   }
   
   # remove monomorphic snps
   if (removeMonosnp) {
-    temp <- filterMono(snpDat)
-    snps <- snps %in% temp
+    msCheck <- 1:nrow(snpDat) %in% filterMono(snpDat)
   }
   
   # remove snps with too much missingness
   if (!is.nan(missingRate)) {
-    temp <- filterMiss(snpDat, missingRate)
-    snps <- snps %in% temp
+    mrCheck <- 1:nrow(snpDat) %in% filterMiss(snpDat, missingRate) 
   }
   
   # filter based on MAF
   if (!is.na(maf)) {
-    temp <- filterMaf(snpDat, maf)
-    snps <- snps %in% temp
+    maCheck <- 1:nrow(snpDat) %in% filterMaf(snpDat, maf) 
   }
   
-  return(snps)
+  return(aoCheck & msCheck & mrCheck & maCheck)
 }
 
 
@@ -36,11 +39,11 @@ filterMono <-function(snpDat){
 
   # find the allele frequencies
   alleleFreq <- 0.5*rowMeans(snpDat, na.rm = TRUE)
-
+  
   # remove monomorphic SNPs
   snps <- which(alleleFreq > 0 & alleleFreq < 1)
 
-  return(snps)
+  return(snps) # returns the indices for the current block index
 }
 
 
@@ -57,7 +60,7 @@ filterAuto <-function(snpChromosome){
   # Select only those SNPs with chromosome labels 1-22 (autosomes)
   snps <- which(snpChromosome %in% autosomeCodes)
 
-  return(snps)
+  return(snps) # returns the indices for the current block indexes
 }
 
 
@@ -72,7 +75,7 @@ filterMiss <-function(snpDat, missingRate){
   missing <- getMissRate(snpDat)
   snps <- which(missing <= missingRate)
 
-  return(snps)
+  return(snps) # returns the indices for the current block index
 }
 
 # filterMaf --------------------------------------------------------------------
@@ -105,7 +108,7 @@ filterMaf <- function(snpDat, maf) {
          properly specified.")
   }
 
-  return(snps)
+  return(snps) # returns the indices for the current block index
 }
 
 # calcMAF ----------------------------------------------------------------------
