@@ -69,8 +69,8 @@ grmCalc <- function(genoDat, weights, sampleId, snpId, autosomeOnly,
   snps <- read.gdsn(index.gdsn(genoDat, "snp.id")) # the letter SNP codes
   
   keepSnps <- c()
-  
-  maxBlocks <- ceiling(length(snps) / nBlocks)  # maximum number of blocks to loop over
+  nSnps <- length(snps)
+  maxBlocks <- ceiling(nSnps / nBlocks)  # maximum number of blocks to loop over
   
   # create empty grm & vector to count the number of snps used
   grm <- rep(list(emptyMat), maxBlocks)
