@@ -15,7 +15,7 @@
 #' @param autosome.only if TRUE, use autosomal SNPs only; if it is a numeric or
 #' character vector, keep SNPs according to the specified chromosomes.
 #' @param remove.monosnp if TURE, remove monomorphic SNPs.
-#' @param  a string of the form "<min, max>" where "<" may be "(" or "[" and
+#' @param maf a string of the form "<min, max>" where "<" may be "(" or "[" and
 #' ">" may be ")" or "]"; this indicates the minimum and maximum MAF to allow
 #' @param missing.rate to use the SNPs with missing rates less than or equal to
 #' missing.rate; if NaN, no misisng threshold.
