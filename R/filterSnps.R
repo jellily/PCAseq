@@ -121,12 +121,6 @@ calcMaf <- function(alleleFreq) {
 getMissRate <- function(snps){
   byRows <- 1
 
-  # function to calculate the proportion missing for one snp
-  propMiss <- function(snp){
-    mean(ifelse(is.na(snp), 1, 0))
-  }
-
-  missing <- apply(snps, byRows, FUN = propMiss)
-
-  return(missing)
+  # calculate the proportion missing for one snp
+  return(apply(snps, byRows, FUN = mean(ifelse(is.na(snp), 1, 0)))
 }
