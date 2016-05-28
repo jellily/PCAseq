@@ -69,10 +69,11 @@ checkMaf <- function(maf) {
       }
       
     } else {
+      print(maf)
       stop("MAF interval boundaries are defined by parentheses or square 
            brackets only.")
     }
-  } else if(is.na(maf) | maf == "NA") {
+  } else if(is.na(maf)) {
     return(TRUE)
   }
 }

@@ -145,7 +145,5 @@ grmCalc <- function(genoDat, weights, sampleId, snpId, autosomeOnly,
 betaWeights <- function(alleleFreq, alpha, beta) {
 
   # find the minor allele frequency
-  minorFreq <- calcMaf(alleleFreq)
-  
-  return(dbeta(minorFreq, alpha, beta))
+  return(dbeta(calcMaf(alleleFreq), alpha, beta))
 }
