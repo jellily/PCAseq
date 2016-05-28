@@ -49,7 +49,7 @@ checkEcnt <- function(ecnt){
 checkMaf <- function(maf) {
   if ((!is.na(maf) & !is.character(maf)) | is.nan(maf)) {
     stop("MAF should be NA or a character. See help(seqPCA) for more details.")
-  } else  if (is.character(maf)) {
+  } else  if (!is.naf(maf) & is.character(maf)) {
     charLength <- nchar(maf)
     
     lowerBound <- substr(maf, 1, 1)
@@ -68,8 +68,7 @@ checkMaf <- function(maf) {
         return(TRUE)
       }
       
-    } else {
-      print(maf)
+    } else if{
       stop("MAF interval boundaries are defined by parentheses or square 
            brackets only.")
     }

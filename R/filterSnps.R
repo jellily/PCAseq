@@ -83,9 +83,8 @@ filterMiss <-function(snpDat, missingRate){
 # or in the range specified (if two values)
 filterMaf <- function(snpDat, maf) {
 
-  # find the allele frequencies
-  alleleFreq <- 0.5*rowMeans(snpDat, na.rm = TRUE)
-  alleleMAFs <- calcMaf(alleleFreq)
+  # find the loci MAFs
+  MAFs <- calcMaf(0.5*rowMeans(snpDat, na.rm = TRUE))
 
   mafMin <- getBound(maf, "min")
   mafMax <- getBound(maf, "max")
@@ -96,13 +95,13 @@ filterMaf <- function(snpDat, maf) {
   # subset based on the interval specified
   # four options ( ), ( ], [ ), and [ ]
   if(lowerBound  == "(" & upperBound == ")") {
-    snps <- which(alleleMAFs > mafMin & alleleMAFs < mafMax)
+    snps <- which(MAFs > mafMin & MAFs < mafMax)
   } else if (lowerBound == "(" & upperBound == "]") {
-    snps <- which(alleleMAFs > mafMin & alleleMAFs <= mafMax)
+    snps <- which(MAFs > mafMin & MAFs <= mafMax)
   } else if (lowerBound == "[" & upperBound == ")") {
-    snps <- which(alleleFreq >= mafMin & alleleFreq < mafMax)
+    snps <- which(MAFs >= mafMin & MAFs < mafMax)
   } else if(lowerBound == "[" & upperBound == "]") {
-    snps <- which(alleleFreq >= mafMin & alleleFreq <= mafMax)
+    snps <- which(MAFs >= mafMin & MAFs <= mafMax)
   } else {
     stop("There was an error with the MAF boundaries please check that they are 
          properly specified.")
