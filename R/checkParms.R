@@ -49,7 +49,7 @@ checkEcnt <- function(ecnt){
 checkMaf <- function(maf) {
   if ((!is.na(maf) & !is.character(maf)) | is.nan(maf)) {
     stop("MAF should be NA or a character. See help(seqPCA) for more details.")
-  } else  if (!is.naf(maf) & is.character(maf)) {
+  } else  if (!is.na(maf) & is.character(maf)) {
     charLength <- nchar(maf)
     
     lowerBound <- substr(maf, 1, 1)
