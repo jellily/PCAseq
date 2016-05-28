@@ -122,5 +122,5 @@ getMissRate <- function(snps){
   byRows <- 1
 
   # calculate the proportion missing for one snp
-  return(apply(snps, byRows, FUN = mean(ifelse(is.na(snp), 1, 0)))
+  return(apply(snps, byRows, FUN = mean(ifelse(is.na(snp), 1, 0))))
 }
