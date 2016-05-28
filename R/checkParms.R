@@ -63,16 +63,15 @@ checkMaf <- function(maf) {
       if (mafMin < 0 | mafMax > 0.5 | mafMin >= mafMax) 
       {
         stop("MAF bounds should be between 0 and 0.5 and given in min, max order.")
-      } else 
-      {
+      } else {
         return(TRUE)
       }
       
-    } else if{
+    } else {
       stop("MAF interval boundaries are defined by parentheses or square 
            brackets only.")
     }
-  } else if(is.na(maf)) {
+  } else if (is.na(maf)) {
     return(TRUE)
   }
 }
