@@ -74,7 +74,7 @@ grmCalc <- function(genoDat, weights, sampleId, snpId, autosomeOnly,
   
   # create empty grm & vector to count the number of snps used
   grm <- rep(list(emptyMat), maxBlocks)
-  
+  print(mem_used())
   # Loop through the SNPs in blocks of size nblock
   for(i in 1:maxBlocks) {
     
@@ -133,6 +133,8 @@ grmCalc <- function(genoDat, weights, sampleId, snpId, autosomeOnly,
       grm[[i]] <- crossprod(zee)
     }
   }
+  
+  print(mem_used())
   
   if (identical(grm, rep(list(emptyMat), maxBlocks))) {
     stop("GRM is the zero matrix. Perhaps all of the SNPs were removed when
