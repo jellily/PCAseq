@@ -1,5 +1,5 @@
 export(seqPCA, seqGRM)
 importFrom("SNPRelate", snpgdsOpen, snpgdsClose, snpgdsGetGeno)
 importFrom("gdsfmt", read.gdsn, index.gdsn, get.attr.gdsn)
-importFrom("pryr", refs, address)
+importFrom("pryr", refs, address, mem_used)
 
