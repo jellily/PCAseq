@@ -106,6 +106,7 @@ grmCalc <- function(genoDat, weights, sampleId, snpId, autosomeOnly,
   maxBlocks <- 20
   # create empty grm & vector to count the number of snps used
   grm <- rep(list(emptyMat), maxBlocks)
+  
   print(mem_used())
   # Loop through the SNPs in blocks of size nblock
   for(i in 1:maxBlocks) {
@@ -128,25 +129,22 @@ grmCalc <- function(genoDat, weights, sampleId, snpId, autosomeOnly,
     } else {
       snpDat <- read.gdsn(index.gdsn(genoDat, "genotype"), start = c(first,1), count = c(count,-1)) 
     }
-    print(mem_used())
+
     # Read in the chromosome ids: might be faster to move this into the autosome only function,
     # so that it's only done when it needs to be done...
     snpChrom <- read.gdsn(index.gdsn(genoDat, "snp.chromosome"), start = first, count = count)
-    print(mem_used())
+
     # Filter the data
     # by subject
     snpDat <- snpDat[ , subj] # subset by subject ID
-    print(mem_used())
+
     # by SNP
     snpIndex <- filterSnps(snpDat, autosomeOnly, removeMonosnp,
                            missingRate, maf, snpChrom)
-    print(mem_used())
     snpIndex <- snpIndex & snps[first:(first + count - 1)] %in% snpId
-    print(mem_used())
     snpDat <- snpDat[snpIndex, ] # subset by SNP ID
-    print(mem_used())
     keepSnps <- c(keepSnps, snps[which(snpIndex) + (i-1) * nBlocks])
-    print(mem_used())
+
     # check to make sure there are still SNPs in the data set
     if ( !(identical(class(snpDat), "matrix")) | (dim(snpDat)[1] == 0) ) {
       message("No data remains in this block after filtering. Going to next
@@ -160,14 +158,13 @@ grmCalc <- function(genoDat, weights, sampleId, snpId, autosomeOnly,
       print(mem_used())
       # Estimate the variance at each SNP
       genoCent <- sweep(snpDat, byRows, STATS = nCopies * alleleFreq, check.margin = FALSE)
-      print(mem_used())
       
       # Find the empirical correlation matrix
       zee <- sweep(genoCent, byRows, STATS = weights, FUN = "*", check.margin = FALSE)
-      print(mem_used())
+
       grm[[i]] <- crossprod(zee)
       print(mem_used())
-      lsos()
+      print(lsos())
     }
   }
   
