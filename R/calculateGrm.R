@@ -47,6 +47,38 @@ runGRM <- function(gdsobj, weights, sampleId, snpId, autosomeOnly,
 }
 
 
+
+# improved list of objects
+.ls.objects <- function (pos = 1, pattern, order.by,
+                         decreasing=FALSE, head=FALSE, n=5) {
+  napply <- function(names, fn) sapply(names, function(x)
+    fn(get(x, pos = pos)))
+  names <- ls(pos = pos, pattern = pattern)
+  obj.class <- napply(names, function(x) as.character(class(x))[1])
+  obj.mode <- napply(names, mode)
+  obj.type <- ifelse(is.na(obj.class), obj.mode, obj.class)
+  obj.prettysize <- napply(names, function(x) {
+    capture.output(format(utils::object.size(x), units = "auto")) })
+  obj.size <- napply(names, object.size)
+  obj.dim <- t(napply(names, function(x)
+    as.numeric(dim(x))[1:2]))
+  vec <- is.na(obj.dim)[, 1] & (obj.type != "function")
+  obj.dim[vec, 1] <- napply(names, length)[vec]
+  out <- data.frame(obj.type, obj.size, obj.prettysize, obj.dim)
+  names(out) <- c("Type", "Size", "PrettySize", "Rows", "Columns")
+  if (!missing(order.by))
+    out <- out[order(out[[order.by]], decreasing=decreasing), ]
+  if (head)
+    out <- head(out, n)
+  out
+}
+
+# shorthand
+lsos <- function(..., n=10) {
+  .ls.objects(..., order.by="Size", decreasing=TRUE, head=TRUE, n=n)
+}
+
+
 # grmCalc ---------------------------------------------------------------------
 # Calculate the GRM
 grmCalc <- function(genoDat, weights, sampleId, snpId, autosomeOnly,
@@ -70,8 +102,8 @@ grmCalc <- function(genoDat, weights, sampleId, snpId, autosomeOnly,
   
   keepSnps <- c()
   nSnps <- length(snps)
-  maxBlocks <- ceiling(nSnps / nBlocks)  # maximum number of blocks to loop over
-  
+  #maxBlocks <- ceiling(nSnps / nBlocks)  # maximum number of blocks to loop over
+  maxBlocks <- 20
   # create empty grm & vector to count the number of snps used
   grm <- rep(list(emptyMat), maxBlocks)
   print(mem_used())
@@ -96,41 +128,46 @@ grmCalc <- function(genoDat, weights, sampleId, snpId, autosomeOnly,
     } else {
       snpDat <- read.gdsn(index.gdsn(genoDat, "genotype"), start = c(first,1), count = c(count,-1)) 
     }
-    
+    print(mem_used())
     # Read in the chromosome ids: might be faster to move this into the autosome only function,
     # so that it's only done when it needs to be done...
     snpChrom <- read.gdsn(index.gdsn(genoDat, "snp.chromosome"), start = first, count = count)
-    
+    print(mem_used())
     # Filter the data
     # by subject
     snpDat <- snpDat[ , subj] # subset by subject ID
-
+    print(mem_used())
     # by SNP
     snpIndex <- filterSnps(snpDat, autosomeOnly, removeMonosnp,
                            missingRate, maf, snpChrom)
+    print(mem_used())
     snpIndex <- snpIndex & snps[first:(first + count - 1)] %in% snpId
+    print(mem_used())
     snpDat <- snpDat[snpIndex, ] # subset by SNP ID
-    
+    print(mem_used())
     keepSnps <- c(keepSnps, snps[which(snpIndex) + (i-1) * nBlocks])
-    
+    print(mem_used())
     # check to make sure there are still SNPs in the data set
     if ( !(identical(class(snpDat), "matrix")) | (dim(snpDat)[1] == 0) ) {
       message("No data remains in this block after filtering. Going to next
               block.")
       next
     } else {
+      print(mem_used())
       alleleFreq <- (1 / nCopies) * rowMeans(snpDat, na.rm = TRUE)
-      
+      print(mem_used())
       weights <- betaWeights(alleleFreq, alpha, beta)
-      
+      print(mem_used())
       # Estimate the variance at each SNP
       genoCent <- sweep(snpDat, byRows, STATS = nCopies * alleleFreq, check.margin = FALSE)
-      print(c(address(genoCent), refs(genoCent)))
+      print(mem_used())
       
       # Find the empirical correlation matrix
       zee <- sweep(genoCent, byRows, STATS = weights, FUN = "*", check.margin = FALSE)
-      print(c(address(zee), refs(zee)))
+      print(mem_used())
       grm[[i]] <- crossprod(zee)
+      print(mem_used())
+      lsos()
     }
   }
   
