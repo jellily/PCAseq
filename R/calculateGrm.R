@@ -121,13 +121,15 @@ grmCalc <- function(genoDat, weights, sampleId, snpId, autosomeOnly,
     } else {
       alleleFreq <- (1 / nCopies) * rowMeans(snpDat, na.rm = TRUE)
       
+      weights <- betaWeights(alleleFreq, alpha, beta)
+      
       # Estimate the variance at each SNP
       genoCent <- sweep(snpDat, byRows, STATS = nCopies * alleleFreq, check.margin = FALSE)
-      
-      weights <- betaWeights(alleleFreq, alpha, beta)
+      print(c(address(genoCent), refs(genoCent)))
       
       # Find the empirical correlation matrix
       zee <- sweep(genoCent, byRows, STATS = weights, FUN = "*", check.margin = FALSE)
+      print(c(address(zee), refs(zee)))
       grm[[i]] <- crossprod(zee)
     }
   }
