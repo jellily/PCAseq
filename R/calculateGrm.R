@@ -48,37 +48,6 @@ runGRM <- function(gdsobj, weights, sampleId, snpId, autosomeOnly,
 
 
 
-# improved list of objects
-.ls.objects <- function (pos = 1, pattern, order.by,
-                         decreasing=FALSE, head=FALSE, n=5) {
-  napply <- function(names, fn) sapply(names, function(x)
-    fn(get(x, pos = pos)))
-  names <- ls(pos = pos, pattern = pattern)
-  obj.class <- napply(names, function(x) as.character(class(x))[1])
-  obj.mode <- napply(names, mode)
-  obj.type <- ifelse(is.na(obj.class), obj.mode, obj.class)
-  obj.prettysize <- napply(names, function(x) {
-    capture.output(format(utils::object.size(x), units = "auto")) })
-  obj.size <- napply(names, object.size)
-  obj.dim <- t(napply(names, function(x)
-    as.numeric(dim(x))[1:2]))
-  vec <- is.na(obj.dim)[, 1] & (obj.type != "function")
-  obj.dim[vec, 1] <- napply(names, length)[vec]
-  out <- data.frame(obj.type, obj.size, obj.prettysize, obj.dim)
-  names(out) <- c("Type", "Size", "PrettySize", "Rows", "Columns")
-  if (!missing(order.by))
-    out <- out[order(out[[order.by]], decreasing=decreasing), ]
-  if (head)
-    out <- head(out, n)
-  out
-}
-
-# shorthand
-lsos <- function(..., n=10) {
-  .ls.objects(..., order.by="Size", decreasing=TRUE, head=TRUE, n=n)
-}
-
-
 # grmCalc ---------------------------------------------------------------------
 # Calculate the GRM
 grmCalc <- function(genoDat, weights, sampleId, snpId, autosomeOnly,
@@ -100,12 +69,11 @@ grmCalc <- function(genoDat, weights, sampleId, snpId, autosomeOnly,
   
   keepSnps <- c()
   nSnps <- length(snps)
-  #maxBlocks <- ceiling(nSnps / nBlocks)  # maximum number of blocks to loop over
-  maxBlocks <- 20
+  maxBlocks <- ceiling(nSnps / nBlocks)  # maximum number of blocks to loop over
+  
   # create empty grm & vector to count the number of snps used
   grm <- matrix(0, nrow = nSubj, ncol = nSubj)
-  
-  print(mem_used())
+
   # Loop through the SNPs in blocks of size nblock
   for(i in 1:maxBlocks) {
     
@@ -160,12 +128,8 @@ grmCalc <- function(genoDat, weights, sampleId, snpId, autosomeOnly,
       zee <- sweep(genoCent, byRows, STATS = weights, FUN = "*", check.margin = FALSE)
 
       grm <- grm + crossprod(zee)
-      print(mem_used())
-      print(lsos())
     }
   }
-  
-  print(mem_used())
   
   if (identical(grm, matrix(0, nrow = nSubj, ncol = nSubj))) {
     stop("GRM is the zero matrix. Perhaps all of the SNPs were removed when
