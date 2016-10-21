@@ -93,8 +93,6 @@ grmCalc <- function(genoDat, weights, sampleId, snpId, autosomeOnly,
   alpha <- weights[1]
   beta <- weights[2]
   
-  emptyMat <- matrix(0, nrow = nSubj, ncol = nSubj)
-  
   # get the index of the subjects
   subj <- read.gdsn(index.gdsn(genoDat, "sample.id"))
   subj <- which(subj %in% sampleId)
@@ -105,7 +103,7 @@ grmCalc <- function(genoDat, weights, sampleId, snpId, autosomeOnly,
   #maxBlocks <- ceiling(nSnps / nBlocks)  # maximum number of blocks to loop over
   maxBlocks <- 20
   # create empty grm & vector to count the number of snps used
-  grm <- rep(list(emptyMat), maxBlocks)
+  grm <- matrix(0, nrow = nSubj, ncol = nSubj)
   
   print(mem_used())
   # Loop through the SNPs in blocks of size nblock
@@ -151,18 +149,17 @@ grmCalc <- function(genoDat, weights, sampleId, snpId, autosomeOnly,
               block.")
       next
     } else {
-      print(mem_used())
+
       alleleFreq <- (1 / nCopies) * rowMeans(snpDat, na.rm = TRUE)
-      print(mem_used())
       weights <- betaWeights(alleleFreq, alpha, beta)
-      print(mem_used())
+
       # Estimate the variance at each SNP
       genoCent <- sweep(snpDat, byRows, STATS = nCopies * alleleFreq, check.margin = FALSE)
       
       # Find the empirical correlation matrix
       zee <- sweep(genoCent, byRows, STATS = weights, FUN = "*", check.margin = FALSE)
 
-      grm[[i]] <- crossprod(zee)
+      grm <- grm + crossprod(zee)
       print(mem_used())
       print(lsos())
     }
@@ -170,11 +167,11 @@ grmCalc <- function(genoDat, weights, sampleId, snpId, autosomeOnly,
   
   print(mem_used())
   
-  if (identical(grm, rep(list(emptyMat), maxBlocks))) {
+  if (identical(grm, matrix(0, nrow = nSubj, ncol = nSubj))) {
     stop("GRM is the zero matrix. Perhaps all of the SNPs were removed when
          filtering or there is no variability in the genotype data.")
   } else {
-    return(list(Reduce("+", grm), keepSnps))
+    return(list(grm, keepSnps))
   }
 }
 
