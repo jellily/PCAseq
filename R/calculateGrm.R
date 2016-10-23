@@ -112,7 +112,7 @@ grmCalc <- function(genoDat, weights, sampleId, snpId, autosomeOnly,
     keepSnps <- c(keepSnps, snps[which(snpIndex) + (i-1) * nBlocks])
 
     ## check to make sure there are still SNPs in the data set
-    print(clas(snpDat))
+    print(class(snpDat))
     
     if ( !(identical(class(snpDat), "matrix")) | (dim(snpDat)[1] == 0) ) {
       message("No data remains in this block after filtering. Going to next
