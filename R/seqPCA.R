@@ -1,7 +1,7 @@
 #' Run PCA-seq on a GDS file
 #'
-#' This function calculates the Genetic Relatedness Matrix (GRM) on a GDS file
-#' using the PCA-seq method for sequence data.
+#' This function calculates the Genetic Relatedness Matrix (GRM) using genetic sequencing data in a GDS file
+#' via the PCA-seq method.
 #'
 #' @aliases seqGRM
 #'
