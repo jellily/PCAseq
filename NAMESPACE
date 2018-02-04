@@ -1,4 +1,4 @@
 export(seqPCA, seqGRM)
 importFrom("SNPRelate", snpgdsOpen, snpgdsClose, snpgdsGetGeno)
 importFrom("gdsfmt", read.gdsn, index.gdsn, get.attr.gdsn)
-
+importFrom("stats", "dbeta")

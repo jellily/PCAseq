@@ -15,7 +15,7 @@
 #' @param autosome.only if TRUE, use autosomal SNPs only; if it is a numeric or
 #' character vector, keep SNPs according to the specified chromosomes.
 #' @param remove.monosnp if TURE, remove monomorphic SNPs.
-#' @param  a string of the form "<min, max>" where "<" may be "(" or "[" and
+#' @param maf a string of the form "<min, max>" where "<" may be "(" or "[" and
 #' ">" may be ")" or "]"; this indicates the minimum and maximum MAF to allow
 #' @param missing.rate to use the SNPs with missing rates less than or equal to
 #' missing.rate; if NaN, no misisng threshold.
@@ -71,15 +71,14 @@ seqPCA <- function(gdsobj, weights = c(1, 1), sample.id = NULL, snp.id = NULL,
 
   checkMiss(missing.rate)
 
-
   # Find the GRM
   grmRes <- runGRM(gdsobj, weights, sample.id, snp.id, autosome.only,
                 remove.monosnp, maf, missing.rate)
-
   grm <- grmRes[[1]]
   sampleId <- grmRes[[2]]
   snpId <- grmRes[[3]] 
   
+
   # Check if the GRM only has one entry
   if (dim(grm)[1] == 1 | dim(grm)[2] == 1 | class(grm) != "matrix"){
     warning("GRM has only one entry.")

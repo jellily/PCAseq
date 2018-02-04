@@ -49,7 +49,7 @@ checkEcnt <- function(ecnt){
 checkMaf <- function(maf) {
   if ((!is.na(maf) & !is.character(maf)) | is.nan(maf)) {
     stop("MAF should be NA or a character. See help(seqPCA) for more details.")
-  } else  if (is.character(maf)) {
+  } else  if (!is.na(maf) & is.character(maf)) {
     charLength <- nchar(maf)
     
     lowerBound <- substr(maf, 1, 1)
@@ -63,8 +63,7 @@ checkMaf <- function(maf) {
       if (mafMin < 0 | mafMax > 0.5 | mafMin >= mafMax) 
       {
         stop("MAF bounds should be between 0 and 0.5 and given in min, max order.")
-      } else 
-      {
+      } else {
         return(TRUE)
       }
       
@@ -72,7 +71,7 @@ checkMaf <- function(maf) {
       stop("MAF interval boundaries are defined by parentheses or square 
            brackets only.")
     }
-  } else if(is.na(maf)) {
+  } else if (is.na(maf)) {
     return(TRUE)
   }
 }
