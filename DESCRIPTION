@@ -1,18 +1,12 @@
 Package: PCAseq
 Type: Package
-Title: Methods for Population Structure Inference with Sequence Data
+Title: Population Structure Inference with Whole Genome Sequence Data
 Version: 0.0.1.1000
-Date: 2016-05-22
-Authors@R: person("Jennfer", "Kirk", email = "jlkirk@uw.edu",
-                  role = c("aut", "cre"))
-Author: Jennifer Kirk [aut, cre]
-Maintainer: Jennifer Kirk <jlkirk@uw.edu>
-Description: This package implements the PCA-seq method for inferring genetic
-    population structure using sequence data. It is meant to extend the SNPRelate
-    pacakge by allowing the user to run PCA-seq on GDS files, similar to the PCA
-    analysis provided by SNPRelate's snpgdsPCA function. Sequence data can be subset
-    by both minimum and maxium MAF values. The results are compatible with SNPRelate
-    functions such as snpgdsLoadings and snpgdsPCACorr.
+Date: 2018-02-04
+Authors@R: person("Jennifer", "Kirk", email = "kirk.jenn@gmail.com", role = c("aut", "cre"))
+Author: Jennifer L Kirk [aut, cre]
+Maintainer: Jennifer L Kirk <kirk.jenn@gmail.com>
+Description: This package implememnts the PCA-seq method for inferring genetic population structure using sequence data. It extends the SNPRelate package by allowing the user to run PCA-seq on GDS files, similar to the PCA analysis provided by the SNPRelate function snpgdsPCA.  Sequence data can be subset by minimum and maximum MAF values. The results are compatible wth SNPRelate functions such as snpgdsLoadings and snpgdsPCACorr.
 License: GPL-3
 Depends:
     R (>= 3.2.0)
